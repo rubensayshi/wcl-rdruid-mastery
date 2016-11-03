@@ -22,9 +22,6 @@ var HOTS = [
     "Spring Blossoms"
 ];
 
-// prefix for caching request results
-var REDIS_PREFIX = "wclrdruid:";
-
 // base url for API
 var API = "https://www.warcraftlogs.com/v1";
 
@@ -64,9 +61,9 @@ if (yargs._[0] === "ls") {
             console.log(table.toString());
         })
         .then(function() {
-            redis.quit();
+            db.close();
         }, function(e) {
-            redis.quit();
+            db.close();
             console.log('ERR5: ' + e);
             throw e;
         })
@@ -291,9 +288,9 @@ else {
             ;
         })
         .then(function() {
-            redis.quit();
+            db.close();
         }, function(e) {
-            redis.quit();
+            db.close();
             console.log('ERR4: ' + e);
             throw e;
         })
