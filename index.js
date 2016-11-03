@@ -229,6 +229,16 @@ else {
                                 }
                             });
 
+                            // end of fight, expire any remaining HoTs
+                            for (var targetID in targets) {
+                                if (targets[targetID].hots.length > 0) {
+                                    var stacks = targets[targetID].hots.length;
+                                    var time = END_TIME - targets[targetID].timeLastChanged;
+
+                                    masteryStacks[stacks] += time;
+                                }
+                            }
+
                             return masteryStacks;
                         })
                         .then(function(masteryStacks) {
