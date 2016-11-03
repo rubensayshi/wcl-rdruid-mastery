@@ -2,9 +2,10 @@ var assert = require('assert');
 var request = require('request');
 var qs = require('querystring');
 var q = require('q');
-var _redis = require("redis"),
-    redis = _redis.createClient();
+var levelup = require('levelup')
 var Table = require('cli-table');
+
+var requestcache = levelup('./requestcache.leveldb');
 
 // get CLI args
 var yargs = require('yargs').argv;
@@ -313,10 +314,14 @@ function requestt(endpoint, query) {
 
     console.log(url);
 
-    redis.get(REDIS_PREFIX + url, function(err, result) {
+    requestcache.get(url, function (err, result) {
         if (err) {
-            def.reject(err);
-            return;
+            if (err.message.indexOf("NotFoundError:")) {
+                result = null;
+            } else {
+                def.reject(err);
+                return;
+            }
         }
 
         if (result) {
@@ -326,7 +331,7 @@ function requestt(endpoint, query) {
 
         request(url, function(error, response, body) {
             if (!error && response.statusCode == 200) {
-                redis.set(REDIS_PREFIX + url, body, function(err) {
+                requestcache.put(url, body, function (err) {
                     if (err) {
                         def.reject(err);
                     } else {
