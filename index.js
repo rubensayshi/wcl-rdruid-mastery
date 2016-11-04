@@ -2,7 +2,7 @@ var assert = require('assert');
 var Table = require('cli-table');
 var WCLAPI = require('./lib/wclapi');
 var Parser = require('./lib/parser');
-var levelup = require('levelup');
+var leveldb = require('level-browserify');
 
 // get CLI args
 var yargs = require('yargs').argv;
@@ -19,7 +19,7 @@ assert(REPORT, "--report required");
 assert(CHARNAME, "--character required");
 assert(yargs._.length === 1, "`ls` or fightID required");
 
-var wclapi = new WCLAPI(APIKEY, levelup('./requestcache.leveldb'));
+var wclapi = new WCLAPI(APIKEY, leveldb('./requestcache.leveldb'));
 
 // when `ls` as argument just list the fights
 if (yargs._[0] === "ls") {
