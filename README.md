@@ -31,10 +31,10 @@ export WCL_RDRUID_APIKEY=""  # set your APIKEY in this
 
 List the fights in your report, ofc replace the reportID and Character name with your own:
 ```bash
-node index.js --report Yghv28tK4NnWaJ9D --character Saikó ls
+node rdruid-mastery.js --report Yghv28tK4NnWaJ9D --character Saikó ls
 ```
 
 Parse a fight by putting the fightID as last argument:
 ```bash
-node index.js --report Yghv28tK4NnWaJ9D --character Saikó 26
+node rdruid-mastery.js --report Yghv28tK4NnWaJ9D --character Saikó 26
 ```
