@@ -46,9 +46,46 @@ if (yargs._[0] === "ls") {
             console.log(e.stack);
         })
 }
+// when `lsfriendlies` as argument just list the friendlies
+else if (yargs._[0] === "lsfriendlies") {
+    wclapi.getFriendlies(REPORT)
+        .then(function(friendlies) {
+            var table = new Table({
+                head: ['Name', 'ID']
+                , colWidths: [40, 10]
+            });
+
+            friendlies
+                .filter(function(friendly) { return friendly.type !== "Pet"; })
+                .sort(function(a, b) { if (a.name < b.name) { return -1; } else { return 1; } })
+                .forEach(function(friendly) {
+                    console.log(friendly);
+                    table.push([
+                        friendly.name, friendly.id
+                    ]);
+                })
+            ;
+
+            console.log(table.toString());
+        })
+        .fail(function(e) {
+            console.log('ERR5: ' + e);
+            console.log(e.stack);
+        })
+}
 // otherwise take the argument as fightID
 else {
     var FIGHTID = yargs._[0];
+    var IGNORE = [];
+    if (yargs.ignore) {
+        if (typeof yargs.ignore === "string") {
+            IGNORE = yargs.ignore.split(",").map(function(ignore) {
+                return ignore.trim();
+            });
+        } else {
+            IGNORE = yargs.ignore;
+        }
+    }
 
     wclapi.getFights(REPORT)
         .then(function(fights) {
@@ -61,58 +98,62 @@ else {
             return fight[0];
         })
         .then(function(fight) {
-            // we need the actorID instead of the name
-            return wclapi.getActorID(REPORT, CHARNAME)
-                .then(function(actorID) {
-                    // get all events
-                    return wclapi.getEvents(REPORT, actorID, fight.start_time, fight.end_time)
-                        .then(function(events) {
+            return wclapi.getFriendlies(REPORT)
+                .then(function(friendlies) {
+                    // we need the actorID instead of the name
+                    return wclapi.getActorID(REPORT, CHARNAME)
+                        .then(function(actorID) {
+                            // get all events
+                            return wclapi.getEvents(REPORT, actorID, fight.start_time, fight.end_time)
+                                .then(function(events) {
 
-                            var parser = new rdruidMastery.Parser(fight, events);
-                            parser.parse();
+                                    var parser = new rdruidMastery.Parser(fight, friendlies, events, IGNORE);
+                                    parser.parse();
 
-                            return parser.masteryStacks;
-                        })
-                        .then(function(masteryStacks) {
-                            var table = new Table({
-                                head: ['Stacks', 'time', '%', 'cummul time', 'cummul %']
-                                , colWidths: [8, 10, 10, 10, 10]
-                            });
+                                    return parser.masteryStacks;
+                                })
+                                .then(function(masteryStacks) {
+                                    var table = new Table({
+                                        head: ['Stacks', 'time', '%', 'cummul time', 'cummul %']
+                                        , colWidths: [8, 10, 10, 10, 10]
+                                    });
 
-                            // sum up the total HoT time
-                            var total = 0;
-                            for (var i = 1; i <= rdruidMastery.Parser.MAX_HOTS; i++) {
-                                total += masteryStacks[i];
-                            }
+                                    // sum up the total HoT time
+                                    var total = 0;
+                                    for (var i = 1; i <= rdruidMastery.Parser.MAX_HOTS; i++) {
+                                        total += masteryStacks[i];
+                                    }
 
-                            // weighted time (for avg HoTs calc)
-                            var avgsum = 0;
-                            // cummulative time
-                            var cummul = 0;
+                                    // weighted time (for avg HoTs calc)
+                                    var avgsum = 0;
+                                    // cummulative time
+                                    var cummul = 0;
 
-                            // loop from high to low
-                            for (var i = rdruidMastery.Parser.MAX_HOTS; i > 0; i--) {
-                                var stacks = i;
-                                var time = masteryStacks[stacks];
+                                    // loop from high to low
+                                    for (var i = rdruidMastery.Parser.MAX_HOTS; i > 0; i--) {
+                                        var stacks = i;
+                                        var time = masteryStacks[stacks];
 
-                                // add time to cummulative time
-                                cummul += time;
+                                        // add time to cummulative time
+                                        cummul += time;
 
-                                // add time to weighted time
-                                avgsum += (stacks * time);
+                                        // add time to weighted time
+                                        avgsum += (stacks * time);
 
-                                // don't start printing until we have something to print
-                                if (cummul > 0) {
-                                    table.push([
-                                        stacks,
-                                        (time / 1000).toFixed(1) + "s", (time / total * 100).toFixed(1) + "%",
-                                        (cummul / 1000).toFixed(1) + "s", (cummul / total * 100).toFixed(1) + "%"
-                                    ]);
-                                }
-                            }
+                                        // don't start printing until we have something to print
+                                        if (cummul > 0) {
+                                            table.push([
+                                                stacks,
+                                                (time / 1000).toFixed(1) + "s", (time / total * 100).toFixed(1) + "%",
+                                                (cummul / 1000).toFixed(1) + "s", (cummul / total * 100).toFixed(1) + "%"
+                                            ]);
+                                        }
+                                    }
 
-                            console.log(table.toString());
-                            console.log("average HoTs on target: " + (avgsum / total));
+                                    console.log(table.toString());
+                                    console.log("average HoTs on target: " + (avgsum / total));
+                                })
+                            ;
                         })
                     ;
                 })

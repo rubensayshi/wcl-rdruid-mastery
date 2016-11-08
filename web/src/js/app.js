@@ -60,15 +60,41 @@ angular.module('rdruid-mastery').config(
                 abstract: true,
                 templateUrl: "templates/common/base.html"
             })
-            .state('app.homepage', {
+            .state('app.mastery-analyzer', {
+                abstract: true,
+                template: "<div ui-view></div>",
+                url: "/mastery-analyzer",
+                controller: "MasteryAnalyzerCtrl"
+            })
+            .state('app.mastery-analyzer.input', {
                 url: "/",
-                controller: "HomepageCtrl",
-                templateUrl: "templates/homepage.html"
+                controller: "MasteryAnalyzerInputCtrl",
+                templateUrl: "templates/mastery-analyzer/input.html"
+            })
+            .state('app.mastery-analyzer.choose-fight', {
+                url: "/choose-fight",
+                controller: "MasteryAnalyzerChooseFightCtrl",
+                templateUrl: "templates/mastery-analyzer/choose-fight.html"
+            })
+            .state('app.mastery-analyzer.download-fight', {
+                url: "/download-fight?fightID",
+                controller: "MasteryAnalyzerDownloadFightCtrl",
+                templateUrl: "templates/mastery-analyzer/download-fight.html"
+            })
+            .state('app.mastery-analyzer.parse-fight', {
+                url: "/parse-fight?fightID",
+                controller: "MasteryAnalyzerParseFightCtrl",
+                templateUrl: "templates/mastery-analyzer/parse-fight.html"
+            })
+            .state('app.mastery-analyzer.result', {
+                url: "/result?fightID",
+                controller: "MasteryAnalyzerResultCtrl",
+                templateUrl: "templates/mastery-analyzer/result.html"
             })
         ;
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/');
+        $urlRouterProvider.otherwise('/mastery-analyzer/');
     }
 );
 

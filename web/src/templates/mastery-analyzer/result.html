@@ -1,0 +1,34 @@
+<div class="row">
+    <div class="col-xs-12">
+        <h1>RESULT!</h1>
+
+        <div>
+            <button class="btn btn-default" ui-sref="^.choose-fight">different fight</button>
+        </div>
+
+        <div class="well">
+            {{ avghots | number:2 }} avg HoTs on target
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <td>stacks</td>
+                    <td>time</td>
+                    <td>%</td>
+                    <td>cummul time</td>
+                    <td>cummul %</td>
+                </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="row in table">
+                <td>{{ row.stacks }} stacks</td>
+                <td>{{ row.time | number:1 }}</td>
+                <td>{{ row.percentage | number:1 }}%</td>
+                <td>{{ row.ctime | number:1 }}</td>
+                <td>{{ row.cpercentage | number:1 }}%</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -2,11 +2,15 @@ var gulp = require('gulp');
 var ngAnnotate = require('gulp-ng-annotate');
 var concat = require('gulp-concat');
 var sass = require('gulp-sass');
-var rename = require('gulp-rename');
 var template = require('gulp-template');
 var uglify = require('gulp-uglify');
 var livereload = require('gulp-livereload');
 var html2js = require('gulp-html2js');
+var browserify = require('browserify');
+var transform = require('vinyl-transform');
+var rename = require('gulp-rename');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
 
 var isLiveReload = process.argv.indexOf('--live-reload') !== -1 || process.argv.indexOf('--livereload') !== -1;
 
@@ -31,6 +35,20 @@ gulp.task('js:libs', function() {
         "./web/src/lib/angular-ui-router/release/angular-ui-router.js"
     ])
         .pipe(concat('libs.js'))
+        .pipe(gulp.dest('./web/www/js/'));
+});
+
+gulp.task('js:browserify-lib', function() {
+    // set up the browserify instance on a task basis
+    var b = browserify({
+        entries: './index.js',
+        debug: true,
+        standalone: 'rdruidMastery'
+    });
+
+    return b.bundle()
+        .pipe(source('rdruid-mastery.js'))
+        .pipe(buffer())
         .pipe(gulp.dest('./web/www/js/'));
 });
 
@@ -74,6 +92,7 @@ gulp.task('watch', function() {
     gulp.watch(['./web/src/sass/**/*.scss'], ['sass:livereload']);
     gulp.watch(['./web/src/img/**/*', './web/src/font/**/*'], ['copystatics:livereload']);
     gulp.watch(['./web/src/js/**/*.js'], ['js:app:livereload']);
+    gulp.watch(['./lib/**/*.js'], ['js:browserify-lib:livereload']);
     gulp.watch(['./web/src/templates/**/*', './web/src/translations/translations/**/*', './web/src/index.html'], ['templates:livereload']);
 });
 
@@ -81,7 +100,15 @@ gulp.task('js:app:livereload', ['js:app'], function() {
     livereload.reload();
 });
 
+gulp.task('js:browserify-lib:livereload', ['js:browserify-lib'], function() {
+    livereload.reload();
+});
+
 gulp.task('templates:livereload', ['templates'], function() {
+    livereload.reload();
+});
+
+gulp.task('sass:livereload', ['sass'], function() {
     livereload.reload();
 });
 
@@ -93,6 +120,6 @@ gulp.task('copystatics:livereload', ['copystatics'], function() {
     livereload.reload();
 });
 
-gulp.task('js', ['js:libs', 'js:app']);
+gulp.task('js', ['js:libs', 'js:browserify-lib', 'js:app']);
 gulp.task('templates', ['templates:index', 'templates:rest']);
 gulp.task('default', ['copystatics', 'sass', 'templates', 'js']);

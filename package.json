@@ -20,7 +20,9 @@
     "yargs": "^6.3.0"
   },
   "devDependencies": {
+    "browserify": "^13.1.1",
     "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
     "gulp-concat": "^2.6.0",
     "gulp-html2js": "^0.4.2",
     "gulp-livereload": "^3.8.1",
@@ -28,6 +30,10 @@
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.3.2",
     "gulp-template": "^4.0.0",
-    "gulp-uglify": "^2.0.0"
+    "gulp-uglify": "^2.0.0",
+    "http-proxy": "^1.15.2",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "vinyl-transform": "^1.0.0"
   }
 }

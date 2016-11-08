@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div ng-if="loading">
+            LOADING ...
+        </div>
+        <div ng-if="!loading">
+            <div>
+                <input type="checkbox" ng-model="onlyBosses" /> only bosses
+            </div>
+            <div>
+                <input type="checkbox" ng-model="onlyKills" /> only kills
+            </div>
+            <div ng-repeat="fight in fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
+                {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
+                <button ng-click="chooseFight(fight)">GO</button>
+            </div>
+        </div>
+    </div>
+</div>

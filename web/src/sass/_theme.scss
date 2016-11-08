@@ -1,0 +1,106 @@
+.blur-me {
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    filter: blur(3px);
+
+    transition: filter 0.8s linear;
+    -webkit-transition: -webkit-filter 0.8s linear;
+}
+
+.spin-me {
+    -webkit-animation: spin 1s infinite linear;
+    -moz-animation: spin 1s infinite linear;
+    -o-animation: spin 1s infinite linear;
+    animation: spin 1s infinite linear;
+}
+
+.progress-spinner {
+    width: 20px;
+    height: 22px;
+    display: inline-block;
+
+    @extend .spin-me;
+}
+
+/*--- Animations ---*/
+@-webkit-keyframes bounce {
+    0%, 100% {
+        opacity: 0.0;
+    }
+    60% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes bounce {
+    0%, 100% {
+        opacity: 0.0;
+    }
+    60% {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes bounce {
+    0%, 100% {
+        opacity: 0.0;
+    }
+    60% {
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        opacity: 0.0;
+    }
+    60% {
+        opacity: 1;
+    }
+}
+
+///*
+@-moz-keyframes spin {
+    0% {
+        -moz-transform: rotate(0deg);
+    }
+    100% {
+        -moz-transform: rotate(359deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(359deg);
+    }
+}
+
+@-o-keyframes spin {
+    0% {
+        -o-transform: rotate(0deg);
+    }
+    100% {
+        -o-transform: rotate(359deg);
+    }
+}
+
+@-ms-keyframes spin {
+    0% {
+        -ms-transform: rotate(0deg);
+    }
+    100% {
+        -ms-transform: rotate(359deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
