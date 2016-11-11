@@ -1,6 +1,7 @@
 var assert = require('assert');
 var Table = require('cli-table');
 var leveldb = require('level-browserify');
+var q = require('q');
 
 var rdruidMastery = require('./');
 
@@ -26,15 +27,15 @@ if (yargs._[0] === "ls") {
     wclapi.getFights(REPORT)
         .then(function(fights) {
             var table = new Table({
-                head: ['Boss', '%', 'fightID']
-                , colWidths: [40, 10, 10]
+                head: ['Boss', '%', 'bossID', 'fightID']
+                , colWidths: [40, 10, 10, 10]
             });
 
             fights
                 .filter(function(fight) { return !!fight.boss; })
                 .forEach(function(fight) {
                     table.push([
-                        fight.name, (fight.bossPercentage / 100).toFixed(1) + "%", fight.id
+                        fight.name, (fight.bossPercentage / 100).toFixed(1) + "%", fight.boss, fight.id
                     ]);
                 })
             ;
@@ -98,6 +99,17 @@ else {
             return fight[0];
         })
         .then(function(fight) {
+            if (fight.boss === 1854) {
+                console.warn("!! WARNING !!");
+                console.warn("Due to the portals not being logged properly on the [" + fight.name + "] fight \n" +
+                    "you need to put the people who entered the portal on ignore using `--ignore name1,name2,name3,etc`. \n" +
+                    "This will ofcourse affect your stats a bit.");
+                console.warn("!! WARNING !!");
+            }
+
+            return fight;
+        })
+        .then(function(fight) {
             return wclapi.getFriendlies(REPORT)
                 .then(function(friendlies) {
                     // we need the actorID instead of the name
@@ -107,10 +119,21 @@ else {
                             return wclapi.getEvents(REPORT, actorID, fight.start_time, fight.end_time)
                                 .then(function(events) {
 
-                                    var parser = new rdruidMastery.Parser(fight, friendlies, events, IGNORE);
-                                    parser.parse();
+                                    var def = q.defer();
 
-                                    return parser.masteryStacks;
+                                    try {
+                                        var parser = new rdruidMastery.Parser(fight, friendlies, events, IGNORE);
+                                        parser.parse();
+
+                                        // need short timeout for `debug` to flush
+                                        setTimeout(function() {
+                                            def.resolve(parser.masteryStacks);
+                                        }, 100);
+                                    } catch (e) {
+                                        def.reject(e);
+                                    }
+
+                                    return def.promise;
                                 })
                                 .then(function(masteryStacks) {
                                     var table = new Table({
