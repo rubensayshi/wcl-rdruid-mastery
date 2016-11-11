@@ -1,24 +1,20 @@
 angular.module('rdruid-mastery')
-    .controller('MasteryAnalyzerCtrl', function($scope, settingsService) {
+    .controller('MasteryAnalyzerCtrl', function($scope, $state, settingsService) {
         $scope.state = {
             reportID: "",
             character: "",
             apikey: "",
+            fightID: null,
             fight: null,
             friendlies: null,
             ignoreFriendliesRaw: null,
-            ignoreFriendlies: null,
+            ignoreFriendlies: {},
             events: null,
             parser: null
         };
 
-        settingsService.$isLoaded().then(function() {
-            $scope.state.apikey = settingsService.apikey;
-            $scope.state.character = settingsService.character;
-            $scope.state.reportID = settingsService.reportID;
-            $scope.state.ignoreFriendlies = settingsService.ignoreFriendlies || [];
-            $scope.state.ignoreFriendliesRaw = $scope.state.ignoreFriendlies.join("\n");
-        });
+        $scope.state.apikey = settingsService.apikey;
+        $scope.state.character = settingsService.character;
 
         var requestcache = rdruidMastery.leveldb('./requestcache.leveldb');
         var _wclapi = null;
@@ -30,8 +26,93 @@ angular.module('rdruid-mastery')
             return _wclapi;
         };
 
-        $scope.stateOk = function() {
-            return !!$scope.state.reportID;
+        $scope.gotoInput = function() {
+            $scope.state.reportID = null;
+            $scope.state.fightID = null;
+            $scope.state.fight = null;
+            $scope.state.events = null;
+            $scope.state.friendlies = null;
+            $scope.state.parser = null;
+
+            $state.go('app.mastery-analyzer.input');
+        };
+
+        $scope.gotoChooseReport = function() {
+            $scope.state.reportID = null;
+            $scope.state.fightID = null;
+            $scope.state.fight = null;
+            $scope.state.events = null;
+            $scope.state.friendlies = null;
+            $scope.state.parser = null;
+
+            $state.go('app.mastery-analyzer.choose-report');
+        };
+
+        $scope.gotoChooseFight = function() {
+            $scope.state.fightID = null;
+            $scope.state.fight = null;
+            $scope.state.events = null;
+            $scope.state.friendlies = null;
+            $scope.state.parser = null;
+
+            $state.go('app.mastery-analyzer.choose-fight', {
+                reportID: $scope.state.reportID
+            });
+        };
+
+        $scope.checkState = function($stateParams) {
+            $stateParams = $stateParams || {};
+
+            if (!$scope.state.apikey || !$scope.state.character) {
+                $state.go('app.mastery-analyzer.input');
+                return false;
+            }
+
+            if (!$scope.state.reportID && $stateParams.reportID) {
+                $scope.state.reportID = $stateParams.reportID;
+            }
+
+            if (!$scope.state.reportID) {
+                if ($state.is('app.mastery-analyzer.choose-report')) {
+                    return true;
+                } else {
+                    $state.go('app.mastery-analyzer.choose-report');
+                    return false;
+                }
+            }
+
+            if (!$scope.state.fightID && $stateParams.fightID) {
+                $scope.state.fightID = $stateParams.fightID;
+            }
+
+            if (!$scope.state.fightID) {
+                if ($state.is('app.mastery-analyzer.choose-fight')) {
+                    return true;
+                } else {
+                    $state.go('app.mastery-analyzer.choose-fight');
+                    return false;
+                }
+            }
+
+            if (!$scope.state.fight || !$scope.state.events) {
+                if ($state.is('app.mastery-analyzer.download-fight')) {
+                    return true;
+                } else {
+                    $state.go('app.mastery-analyzer.download-fight');
+                    return false;
+                }
+            }
+
+            if (!$scope.state.parser) {
+                if ($state.is('app.mastery-analyzer.parse-fight')) {
+                    return true;
+                } else {
+                    $state.go('app.mastery-analyzer.parse-fight');
+                    return false;
+                }
+            }
+
+            return true;
         }
     });
 
@@ -39,35 +120,55 @@ angular.module('rdruid-mastery')
 angular.module('rdruid-mastery')
     .controller('MasteryAnalyzerInputCtrl', function($scope, $state, settingsService) {
         $scope.continue = function() {
-            if (!$scope.stateOk()) {
+            if (!$scope.state.apikey || !$scope.state.character) {
                 alert('NEED MORE DETAILS');
                 return;
             }
 
-            settingsService.$isLoaded().then(function() {
-                settingsService.apikey = $scope.state.apikey;
-                settingsService.character = $scope.state.character;
-                settingsService.reportID = $scope.state.reportID;
-                $scope.state.ignoreFriendlies = $scope.state.ignoreFriendliesRaw
-                    .split(",")
-                    .map(function(ignore) { return ignore.trim(); })
-                    .filter(function(ignore) { return !!ignore; });
-                settingsService.ignoreFriendlies = $scope.state.ignoreFriendlies;
+            settingsService.apikey = $scope.state.apikey;
+            settingsService.character = $scope.state.character;
 
-                return settingsService.$store();
-            }).then(function() {
-                $state.go('app.mastery-analyzer.choose-fight');
-            }).catch(function(e) {
-                alert(e);
+            settingsService.$store()
+                .then(function() {
+                    $state.go('app.mastery-analyzer.choose-report');
+                }).catch(function(e) {
+                    alert(e);
+                });
+        };
+    });
+
+
+angular.module('rdruid-mastery')
+    .controller('MasteryAnalyzerChooseReportCtrl', function($scope, $state, $stateParams, $timeout, settingsService) {
+        if (!$scope.checkState($stateParams)) {
+            return;
+        }
+
+        $scope.reports = settingsService.reports || [];
+        $scope.loading = false;
+
+        $scope.addReport = function(reportID) {
+            var report = {id: reportID, name: reportID};
+
+            settingsService.reports = settingsService.reports || [];
+            settingsService.reports.push(report);
+
+            return settingsService.$store().then(function() {
+                return $scope.chooseReport(report);
+            });
+        };
+
+        $scope.chooseReport = function(report) {
+            return $state.go('app.mastery-analyzer.choose-fight', {
+                reportID: report.id
             });
         };
     });
 
 
 angular.module('rdruid-mastery')
-    .controller('MasteryAnalyzerChooseFightCtrl', function($scope, $state, $timeout) {
-        if (!$scope.stateOk()) {
-            $state.go('app.mastery-analyzer.input');
+    .controller('MasteryAnalyzerChooseFightCtrl', function($scope, $stateParams, $state, $timeout) {
+        if (!$scope.checkState($stateParams)) {
             return;
         }
 
@@ -90,6 +191,7 @@ angular.module('rdruid-mastery')
 
         $scope.chooseFight = function(fight) {
             $state.go('app.mastery-analyzer.download-fight', {
+                reportID: $scope.state.reportID,
                 fightID: fight.id
             });
         };
@@ -98,8 +200,7 @@ angular.module('rdruid-mastery')
 
 angular.module('rdruid-mastery')
     .controller('MasteryAnalyzerDownloadFightCtrl', function($scope, $state, $timeout, $stateParams) {
-        if (!$scope.stateOk()) {
-            $state.go('app.mastery-analyzer.input');
+        if (!$scope.checkState($stateParams)) {
             return;
         }
 
@@ -109,7 +210,7 @@ angular.module('rdruid-mastery')
             .then(function(fights) {
                 // find the fight
                 var fight = fights.filter(function(fight) {
-                    return fight.id == $stateParams.fightID;
+                    return fight.id == $scope.state.fightID;
                 });
 
                 if (fight.length !== 1) {
@@ -136,6 +237,7 @@ angular.module('rdruid-mastery')
                                         $scope.state.events = events;
 
                                         $state.go('app.mastery-analyzer.parse-fight', {
+                                            reportID: $scope.state.reportID,
                                             fightID: fight.id
                                         });
                                     })
@@ -149,40 +251,61 @@ angular.module('rdruid-mastery')
 
 
 angular.module('rdruid-mastery')
-    .controller('MasteryAnalyzerParseFightCtrl', function($scope, $state, $timeout, $stateParams) {
-        if (!$scope.stateOk()) {
-            $state.go('app.mastery-analyzer.input');
-            return;
-        }
-        if (!$scope.state.fight || !$scope.state.events) {
-            $state.go('app.mastery-analyzer.download-fight', {fightID: $stateParams.fightID});
+    .controller('MasteryAnalyzerParseFightCtrl', function($scope, $state, $timeout, $stateParams, settingsService) {
+        if (!$scope.checkState($stateParams)) {
             return;
         }
 
-        $scope.state.parser = new rdruidMastery.Parser($scope.state.fight, $scope.state.friendlies, $scope.state.events, $scope.state.ignoreFriendlies || []);
+        $scope.loading = true;
+        $scope.parsing = false;
 
-        $timeout(function() {
-            $scope.state.parser.parse();
+        $scope.continueInputFriendlies = function() {
+            $scope.state.ignoreFriendlies[ignoreFriendliesKey] = $scope.state.ignoreFriendliesRaw
+                .split(",")
+                .map(function(ignore) { return ignore.trim(); })
+                .filter(function(ignore) { return !!ignore; }) || [];
 
-            $state.go('app.mastery-analyzer.result', {
-                fightID: $scope.state.fight.id
+            if (settingsService.ignoreFriendlies instanceof Array) {
+                settingsService.ignoreFriendlies = {};
+            }
+            settingsService.ignoreFriendlies[ignoreFriendliesKey] = $scope.state.ignoreFriendlies[ignoreFriendliesKey];
+
+            return settingsService.$store().then(function() {
+                return $scope.parse();
             });
-        })
+        };
+
+        $scope.parse = function() {
+            $scope.state.parser = new rdruidMastery.Parser($scope.state.fight, $scope.state.friendlies, $scope.state.events, $scope.state.ignoreFriendlies[ignoreFriendliesKey] || []);
+
+            $timeout(function() {
+                $scope.loading = false;
+                $scope.parsing = true;
+                $scope.state.parser.parse();
+
+                $state.go('app.mastery-analyzer.result', {
+                    reportID: $scope.state.reportID,
+                    fightID: $scope.state.fight.id
+                });
+            });
+        };
+
+        var ignoreFriendliesKey = $scope.state.reportID + ":" + $scope.state.fight.id;
+
+        if ($scope.state.fight.boss === 1854) {
+            $scope.loading = false;
+            $scope.inputFriendlies = true;
+            $scope.state.ignoreFriendlies[ignoreFriendliesKey] = settingsService.ignoreFriendlies[ignoreFriendliesKey] || [];
+            $scope.state.ignoreFriendliesRaw = $scope.state.ignoreFriendlies[ignoreFriendliesKey].join(", ");
+        } else {
+            $scope.parse();
+        }
     });
 
 
 angular.module('rdruid-mastery')
     .controller('MasteryAnalyzerResultCtrl', function($scope, $state, $timeout, $stateParams) {
-        if (!$scope.stateOk()) {
-            $state.go('app.mastery-analyzer.input');
-            return;
-        }
-        if (!$scope.state.fight || !$scope.state.events) {
-            $state.go('app.mastery-analyzer.download-fight', {fightID: $stateParams.fightID});
-            return;
-        }
-        if (!$scope.state.parser) {
-            $state.go('app.mastery-analyzer.parse-fight', {fightID: $stateParams.fightID});
+        if (!$scope.checkState($stateParams)) {
             return;
         }
 

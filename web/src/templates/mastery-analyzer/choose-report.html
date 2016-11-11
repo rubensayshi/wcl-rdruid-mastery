@@ -1,0 +1,33 @@
+<div class="row">
+    <div class="col-xs-12">
+        <button class="btn btn-default" ng-click="gotoInput()">different character</button>
+        <button class="btn btn-default" ng-click="gotoChooseReport()">different report</button>
+        <button class="btn btn-default" ng-click="gotoChooseFight()">different fight</button>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div ng-if="loading">
+            LOADING ...
+        </div>
+        <div ng-if="!loading">
+            <h3>Choose Report</h3>
+            <div ng-repeat="report in reports">
+                {{ report.name }}
+                <button ng-click="chooseReport(report)">GO</button>
+            </div>
+
+            <h3>Add New Report</h3>
+            <form>
+                <div class="form-group">
+                    <label>REPORTID</label>
+                    <input class="form-control" type="text" ng-model="state.reportID"/>
+                </div>
+                <div>
+                    <button class="btn btn-primary btn-block" ng-click="addReport(state.reportID)">ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

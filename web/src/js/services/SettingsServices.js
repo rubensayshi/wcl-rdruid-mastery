@@ -2,8 +2,8 @@ angular.module('rdruid-mastery').service('settingsService', function($q) {
     var defaults = {
         apikey: "",
         character: "",
-        reportID: "",
-        ignoreFriendlies: ""
+        reports: [],
+        ignoreFriendlies: {}
     };
     angular.extend(this, defaults);
 
@@ -54,7 +54,16 @@ angular.module('rdruid-mastery').service('settingsService', function($q) {
                     doc = null;
                 }
 
-                angular.extend(self, doc || defaults);
+                doc = doc || {};
+
+                //update each of the values as defined in the defaults array
+                angular.forEach(defaults, function(value, key) {
+                    if (typeof doc[key] !== "undefined") {
+                        self[key] = doc[key];
+                    } else {
+                        self[key] = defaults[key];
+                    }
+                });
             },
             function(e) { alert(e); throw e; }
         );

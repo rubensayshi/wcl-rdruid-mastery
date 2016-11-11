@@ -1,10 +1,14 @@
 <div class="row">
     <div class="col-xs-12">
-        <h1>RESULT!</h1>
+        <button class="btn btn-default" ng-click="gotoInput()">different character</button>
+        <button class="btn btn-default" ng-click="gotoChooseReport()">different report</button>
+        <button class="btn btn-default" ng-click="gotoChooseFight()">different fight</button>
+    </div>
+</div>
 
-        <div>
-            <button class="btn btn-default" ui-sref="^.choose-fight">different fight</button>
-        </div>
+<div class="row">
+    <div class="col-xs-12">
+        <h1>RESULT!</h1>
 
         <div class="well">
             {{ avghots | number:2 }} avg HoTs on target

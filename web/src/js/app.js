@@ -64,30 +64,40 @@ angular.module('rdruid-mastery').config(
                 abstract: true,
                 template: "<div ui-view></div>",
                 url: "/mastery-analyzer",
-                controller: "MasteryAnalyzerCtrl"
+                controller: "MasteryAnalyzerCtrl",
+                resolve: {
+                    settingsServiceLoaded: function(settingsService) {
+                        return settingsService.$isLoaded();
+                    }
+                }
             })
             .state('app.mastery-analyzer.input', {
                 url: "/",
                 controller: "MasteryAnalyzerInputCtrl",
                 templateUrl: "templates/mastery-analyzer/input.html"
             })
+            .state('app.mastery-analyzer.choose-report', {
+                url: "/choose-report",
+                controller: "MasteryAnalyzerChooseReportCtrl",
+                templateUrl: "templates/mastery-analyzer/choose-report.html"
+            })
             .state('app.mastery-analyzer.choose-fight', {
-                url: "/choose-fight",
+                url: "/choose-fight?reportID",
                 controller: "MasteryAnalyzerChooseFightCtrl",
                 templateUrl: "templates/mastery-analyzer/choose-fight.html"
             })
             .state('app.mastery-analyzer.download-fight', {
-                url: "/download-fight?fightID",
+                url: "/download-fight?reportID&fightID",
                 controller: "MasteryAnalyzerDownloadFightCtrl",
                 templateUrl: "templates/mastery-analyzer/download-fight.html"
             })
             .state('app.mastery-analyzer.parse-fight', {
-                url: "/parse-fight?fightID",
+                url: "/parse-fight?reportID&fightID",
                 controller: "MasteryAnalyzerParseFightCtrl",
                 templateUrl: "templates/mastery-analyzer/parse-fight.html"
             })
             .state('app.mastery-analyzer.result', {
-                url: "/result?fightID",
+                url: "/result?reportID&fightID",
                 controller: "MasteryAnalyzerResultCtrl",
                 templateUrl: "templates/mastery-analyzer/result.html"
             })
