@@ -38,3 +38,23 @@ Parse a fight by putting the fightID as last argument:
 ```bash
 node rdruid-mastery.js --report Yghv28tK4NnWaJ9D --character Saikó 26
 ```
+
+Browserify version
+------------------
+To build the browser version:
+```
+gulp
+```
+
+Then to run it you need to setup the proxy to WCL because there's a CORS header missing on the wcl API.  
+This just proxies requests to `http://localhost:8000` to `https://www.warcraftlogs.com`.
+```
+node proxy.js
+```
+
+And then serve the `web/www` folder so you can visit the page:
+```
+serve -p 3000 web/www
+```
+
+And now you can visit `http://localhost:3000`
