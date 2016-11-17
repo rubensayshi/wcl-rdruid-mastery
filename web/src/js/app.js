@@ -4,7 +4,10 @@ angular.module('rdruid-mastery', [
 
 angular.module('rdruid-mastery').run(
     function($rootScope, $state, $log) {
+        // used to invalidate old parser results
+        $rootScope.RESULTS_VERSION = 'v1.0.0';
 
+        // use to modify the class on the <body>
         $rootScope.bodyClass = [];
 
         $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
@@ -62,7 +65,7 @@ angular.module('rdruid-mastery').config(
             })
             .state('app.mastery-analyzer', {
                 abstract: true,
-                template: "<div ui-view></div>",
+                templateUrl: "templates/mastery-analyzer/index.html",
                 url: "/mastery-analyzer",
                 controller: "MasteryAnalyzerCtrl",
                 resolve: {

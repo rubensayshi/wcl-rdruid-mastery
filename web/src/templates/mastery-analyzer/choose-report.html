@@ -1,23 +1,41 @@
 <div class="row">
-    <div class="col-xs-12">
-        <button class="btn btn-default" ng-click="gotoInput()">different character</button>
-        <button class="btn btn-default" ng-click="gotoChooseReport()">different report</button>
-        <button class="btn btn-default" ng-click="gotoChooseFight()">different fight</button>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-xs-12">
-        <div ng-if="loading">
+    <div class="col-xs-8">
+        <div class="well" ng-if="loading">
             LOADING ...
         </div>
-        <div ng-if="!loading">
-            <h3>Choose Report</h3>
-            <div ng-repeat="report in reports">
-                {{ report.name }}
-                <button ng-click="chooseReport(report)">GO</button>
+        <div class="well" ng-if="!loading">
+            <div class="row">
+                <div class="col-xs-8"><h3>Choose Report</h3></div>
+                <div class="col-xs-4">
+                    <div class="well">
+                        <input type="checkbox" ng-model="onlyBosses" /> only bosses
+                        <br />
+                        <input type="checkbox" ng-model="onlyKills" /> only kills
+                    </div>
+                </div>
             </div>
+            <div ng-repeat="report in reports" class="well" style="margin-top: 10px;">
+                <div>
+                    <h4>
+                        Report: {{ report.name }}
+                        <button ng-click="chooseReport(report)">GO</button>
+                    </h4>
+                </div>
 
+                <div ng-if="report.fights" class="well">
+                    Previously parsed fights:
+                    <div style="margin-left: 30px;">
+                        <div ng-repeat="fight in report.fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
+                            {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
+                            <button ng-click="chooseFight(fight, report.id)">GO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-4">
+        <div class="well">
             <h3>Add New Report</h3>
             <form>
                 <div class="form-group">

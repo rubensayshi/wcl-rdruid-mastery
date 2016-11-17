@@ -1,8 +1,9 @@
-angular.module('rdruid-mastery').service('settingsService', function($q) {
+angular.module('rdruid-mastery').service('settingsService', function($rootScope, $q) {
     var defaults = {
         apikey: "",
         character: "",
         reports: [],
+        results: {},
         ignoreFriendlies: {}
     };
     angular.extend(this, defaults);
@@ -10,6 +11,12 @@ angular.module('rdruid-mastery').service('settingsService', function($q) {
     var STORAGEID = "settings";
 
     var storage = rdruidMastery.leveldb('./settings.leveldb');
+
+    var normalizeVersion = function(v) {
+        return parseInt(v.match(/^v(\d)\.(\d)\.(\d)$/).map(function(v) {
+            return ("00" + v).slice(-2);
+        }).join(""), 10);
+    };
 
     this._$isLoaded = null;
     /**
@@ -64,6 +71,23 @@ angular.module('rdruid-mastery').service('settingsService', function($q) {
                         self[key] = defaults[key];
                     }
                 });
+
+                self.results[$rootScope.RESULTS_VERSION] = self.results[$rootScope.RESULTS_VERSION] || {};
+
+                var currentVersion = normalizeVersion($rootScope.RESULTS_VERSION);
+                var storeCleanedResults = false;
+                Object.keys(self.results).forEach(function(_version) {
+                    var version = normalizeVersion(_version);
+
+                    if (version < currentVersion) {
+                        delete self.results[_version];
+                        storeCleanedResults = true;
+                    }
+                });
+
+                if (storeCleanedResults) {
+                    return settingsService.$store();
+                }
             },
             function(e) { alert(e); throw e; }
         );
