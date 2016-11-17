@@ -16,6 +16,8 @@ It does this by going through the `applybuff` and `removebuff` events;
    - `stacks[targets.hots.length] += 10s - 4s`  
    - `target.hots.remove(rejuv)`
 
+[![Build Status](https://travis-ci.org/rubensayshi/wcl-rdruid-mastery.png?branch=master)](https://travis-ci.org/rubensayshi/wcl-rdruid-mastery)
+
 Install
 -------
 ```
