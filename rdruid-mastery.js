@@ -122,7 +122,7 @@ else {
                                     var def = q.defer();
 
                                     try {
-                                        var parser = new rdruidMastery.Parser(fight, friendlies, events, IGNORE);
+                                        var parser = new rdruidMastery.Parser(fight, actorID, friendlies, events, IGNORE);
                                         parser.parse();
 
                                         // need short timeout for `debug` to flush
@@ -130,7 +130,10 @@ else {
                                             def.resolve(parser.masteryStacks);
                                         }, 100);
                                     } catch (e) {
-                                        def.reject(e);
+                                        // need short timeout for `debug` to flush
+                                        setTimeout(function() {
+                                            def.reject(e);
+                                        }, 100);
                                     }
 
                                     return def.promise;

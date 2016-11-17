@@ -6,6 +6,7 @@ angular.module('rdruid-mastery')
             apikey: "",
             fightID: null,
             fight: null,
+            actorID: null,
             friendlies: null,
             ignoreFriendliesRaw: null,
             ignoreFriendlies: {},
@@ -30,6 +31,7 @@ angular.module('rdruid-mastery')
             $scope.state.reportID = null;
             $scope.state.fightID = null;
             $scope.state.fight = null;
+            $scope.state.actorID = null;
             $scope.state.events = null;
             $scope.state.friendlies = null;
             $scope.state.parser = null;
@@ -41,6 +43,7 @@ angular.module('rdruid-mastery')
             $scope.state.reportID = null;
             $scope.state.fightID = null;
             $scope.state.fight = null;
+            $scope.state.actorID = null;
             $scope.state.events = null;
             $scope.state.friendlies = null;
             $scope.state.parser = null;
@@ -51,6 +54,7 @@ angular.module('rdruid-mastery')
         $scope.gotoChooseFight = function() {
             $scope.state.fightID = null;
             $scope.state.fight = null;
+            $scope.state.actorID = null;
             $scope.state.events = null;
             $scope.state.friendlies = null;
             $scope.state.parser = null;
@@ -94,7 +98,7 @@ angular.module('rdruid-mastery')
                 }
             }
 
-            if (!$scope.state.fight || !$scope.state.events) {
+            if (!$scope.state.fight || !$scope.state.events || !$scope.state.actorID) {
                 if ($state.is('app.mastery-analyzer.download-fight')) {
                     return true;
                 } else {
@@ -230,8 +234,10 @@ angular.module('rdruid-mastery')
                         // we need the actorID instead of the name
                         return wclapi.getActorID($scope.state.reportID, $scope.state.character)
                             .then(function(actorID) {
+                                $scope.state.actorID = actorID;
+
                                 // get all events
-                                return wclapi.getEvents($scope.state.reportID, actorID, fight.start_time, fight.end_time)
+                                return wclapi.getEvents($scope.state.reportID, $scope.state.actorID, fight.start_time, fight.end_time)
                                     .then(function(events) {
 
                                         $scope.state.events = events;
@@ -276,7 +282,7 @@ angular.module('rdruid-mastery')
         };
 
         $scope.parse = function() {
-            $scope.state.parser = new rdruidMastery.Parser($scope.state.fight, $scope.state.friendlies, $scope.state.events, $scope.state.ignoreFriendlies[ignoreFriendliesKey] || []);
+            $scope.state.parser = new rdruidMastery.Parser($scope.state.fight, $scope.state.actorID, $scope.state.friendlies, $scope.state.events, $scope.state.ignoreFriendlies[ignoreFriendliesKey] || []);
 
             $timeout(function() {
                 $scope.loading = false;
