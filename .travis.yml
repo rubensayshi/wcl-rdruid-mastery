@@ -1,0 +1,15 @@
+language: node_js
+
+branches:
+  only: 
+   - master
+
+node_js:
+ - '0.12'
+ - 'node'
+
+before_install:
+ - npm install -g gulp
+
+script:
+ - tape test/*
