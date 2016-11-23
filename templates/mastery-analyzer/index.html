@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="col-xs-12">
+        <ol class="breadcrumb">
+            <li><a href ng-click="gotoInput()">Mastery Analyzer</a></li>
+            <!-- character -->
+            <li ng-if="state.character && !state.reportID" class="active">
+                {{ state.character }}
+            </li>
+            <li ng-if="state.character && state.reportID">
+                <a href ng-click="gotoChooseReport()">{{ state.character }}</a>
+            </li>
+            <!-- report -->
+            <li ng-if="state.reportID && !state.fight" class="active">
+                {{ state.reportID }}
+            </li>
+            <li ng-if="state.reportID && state.fight">
+                <a href ng-click="gotoChooseFight()">{{ state.reportID }}</a>
+            </li>
+            <!-- fight -->
+            <li ng-if="state.fight" class="active">
+                {{ state.fight.name }}
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div ui-view></div>

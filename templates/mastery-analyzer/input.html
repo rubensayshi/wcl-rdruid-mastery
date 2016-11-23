@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div class="well">
+            Hey fellow tree, <br />
+            <br />
+            This tool works entirely in your browser without using a server backend to store or process things. <br />
+            Because of this you need to get a warcraftlogs.com API key yourself, you can find this at the bottom of your accounts page; <a href="https://www.warcraftlogs.com/accounts/changeuser">here</a><br />
+            <br />
+            Everything will be stored inside your browser, so the API key is never leaked to the server or anything like that.<br />
+            <br />
+            This is the first, rather 'raw' version of this tool, <br />
+            Currently it only analyzes when buffs are applied and removed and does not take into account how much healing is done.
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label>CHARACTER</label>
+                <input class="form-control" type="text" ng-model="state.character"/>
+            </div>
+            <div class="form-group">
+                <label>APIKEY</label>
+                <input class="form-control" type="text" ng-model="state.apikey"/>
+            </div>
+            <div>
+                <button class="btn btn-primary btn-block" ng-click="continue()">GOGO</button>
+            </div>
+        </form>
+    </div>
+</div>

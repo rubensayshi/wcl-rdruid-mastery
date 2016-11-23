@@ -1,0 +1,34 @@
+<div class="row">
+    <div ng-if="parsing" class="col-xs-12">
+        <div class="well">
+            PARSING ...
+        </div>
+    </div>
+    <div ng-if="!parsing" class="col-xs-12">
+        <div ng-if="!loading">
+            <div class="well" ng-if="inputFriendlies">
+                <p>
+                    Due to the portals not being logged properly on the [{{ state.fight.name }}] fight, <br />
+                    you need to put the people who entered the portal on ignore using. <br />
+                    This will ofcourse affect your stats a bit, but not too much.
+                </p>
+                <div class="form-group">
+                    <label>IGNORE FRIENDLIES</label>
+                    <div ng-repeat="friendly in friendlies">
+                        <input name="ignoreFriendliesRaw[]" type="checkbox" value="{{ friendly.id }}"
+                               ng-checked="state.ignoreFriendliesRaw[friendly.id]"
+                               ng-click="state.ignoreFriendliesRaw[friendly.id] = !state.ignoreFriendliesRaw[friendly.id]" /> {{ friendly.name }}
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-primary btn-block" ng-click="continueInputFriendlies()">GOGO</button>
+                </div>
+            </div>
+        </div>
+        <div ng-if="loading">
+            <div class="well">
+                LOADING ...
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<div class="row">
+    <div class="col-xs-12">
+        <div ng-if="loading">
+            <div class="well">
+                LOADING FIGHTS ...
+            </div>
+        </div>
+        <div ng-if="!loading">
+            <div class="well">
+                This is where you choose which fight to analyze.
+            </div>
+
+            <div class="well">
+                <div class="row">
+                    <div class="col-xs-8"><h3>Choose Fight</h3></div>
+                    <div class="col-xs-4">
+                        <div class="well">
+                            <input type="checkbox" ng-model="onlyBosses" /> only bosses
+                            <br />
+                            <input type="checkbox" ng-model="onlyKills" /> only kills
+                        </div>
+                    </div>
+                </div>
+                <div ng-repeat="fight in fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
+                    {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
+                    <button ng-click="chooseFight(fight)">{{ hasResults && 'show results' || 'analyze' }}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
