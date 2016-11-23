@@ -21,7 +21,7 @@ angular.module('rdruid-mastery')
         var _wclapi = null;
         $scope.wclapi = function() {
             if (!_wclapi) {
-                _wclapi = new rdruidMastery.WCLAPI($scope.state.apikey, requestcache, "http://localhost:8000/v1");
+                _wclapi = new rdruidMastery.WCLAPI($scope.state.apikey, requestcache);
             }
 
             return _wclapi;
@@ -208,7 +208,6 @@ angular.module('rdruid-mastery')
                 function(fights) {
                     $timeout(function() {
                         report.fights = fights.filter(function(fight) {
-                            console.log($scope.reportFightID(fight.id, report.id));
                             return (typeof settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightID(fight.id, report.id)] !== "undefined");
                         });
                     });
@@ -216,6 +215,16 @@ angular.module('rdruid-mastery')
         });
 
         $scope.addReport = function(reportID) {
+            var m = reportID.match(/reports\/([a-zA-Z0-9]+)/);
+            if (m) {
+                reportID = m[1];
+            }
+
+            if (!reportID.match(/^[a-zA-Z0-9]+$/)) {
+                alert("This is not a valid reportID");
+                return;
+            }
+
             var report = {id: reportID, name: reportID};
 
             settingsService.reports = settingsService.reports || [];
@@ -247,6 +256,10 @@ angular.module('rdruid-mastery')
 
         $scope.wclapi().getFights($scope.state.reportID).then(
             function(fights) {
+                fights.forEach(function(fight) {
+                    fight.hasResults = (typeof settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightID(fight.id, $scope.state.reportID)] !== "undefined");
+                });
+
                 $timeout(function() {
                     $scope.fights = fights;
                     $scope.loading = false;
@@ -323,10 +336,14 @@ angular.module('rdruid-mastery')
         $scope.parsing = false;
 
         $scope.continueInputFriendlies = function() {
-            $scope.state.ignoreFriendlies[$scope.reportFightID()] = $scope.state.ignoreFriendliesRaw
-                .split(",")
-                .map(function(ignore) { return ignore.trim(); })
-                .filter(function(ignore) { return !!ignore; }) || [];
+            console.log($scope.state.ignoreFriendliesRaw);
+
+            $scope.state.ignoreFriendlies[$scope.reportFightID()] = [];
+            Object.keys($scope.state.ignoreFriendliesRaw).forEach(function(friendlyId) {
+                if ($scope.state.ignoreFriendliesRaw[friendlyId]) {
+                    $scope.state.ignoreFriendlies[$scope.reportFightID()].push(friendlyId);
+                }
+            });
 
             if (settingsService.ignoreFriendlies instanceof Array) {
                 settingsService.ignoreFriendlies = {};
@@ -361,10 +378,23 @@ angular.module('rdruid-mastery')
         };
 
         if ($scope.state.fight.boss === 1854) {
-            $scope.loading = false;
             $scope.inputFriendlies = true;
             $scope.state.ignoreFriendlies[$scope.reportFightID()] = settingsService.ignoreFriendlies[$scope.reportFightID()] || [];
-            $scope.state.ignoreFriendliesRaw = $scope.state.ignoreFriendlies[$scope.reportFightID()].join(", ");
+            $scope.state.ignoreFriendliesRaw = {};
+            $scope.state.ignoreFriendlies[$scope.reportFightID()].forEach(function(friendlyID) {
+                $scope.state.ignoreFriendliesRaw[friendlyID] = true;
+            });
+
+            $scope.wclapi().getFriendlies($scope.state.reportID)
+                .then(function(friendlies) {
+                    $timeout(function() {
+                        $scope.friendlies = friendlies.filter(function(friendly) {
+                            return !friendly.petOwner;
+                        });
+
+                        $scope.loading = false;
+                    });
+                });
         } else {
             $scope.parse();
         }
