@@ -14,7 +14,7 @@ test('simple fight, 1 target, end of fight', function (t) {
         {timestamp: 1 * 1000, type: 'applybuff', sourceID: 1, targetID: 1, ability: {name: 'Lifebloom', guid: 2}}
     ];
 
-    var parser = new rdruidMastery.Parser(fight, 1, [], events);
+    var parser = new rdruidMastery.Parser(fight, 1, [{id: 1, name: 'P1'}, {id: 2, name: 'P2'}], events, []);
     parser.parse();
 
     t.deepEqual(parser.masteryStacks, {
@@ -43,7 +43,7 @@ test('simple fight, 1 target, removebuff', function (t) {
         {timestamp: 7 * 1000, type: 'removebuff', sourceID: 1, targetID: 1, ability: {name: 'Lifebloom', guid: 2}}
     ];
 
-    var parser = new rdruidMastery.Parser(fight, 1, [], events);
+    var parser = new rdruidMastery.Parser(fight, 1, [{id: 1, name: 'P1'}, {id: 2, name: 'P2'}], events, []);
     parser.parse();
 
     t.deepEqual(parser.masteryStacks, {
@@ -72,7 +72,7 @@ test('simple fight, 2 targets, end of fight', function (t) {
         {timestamp: 1 * 1000, type: 'applybuff', sourceID: 1, targetID: 2, ability: {name: 'Lifebloom', guid: 2}}
     ];
 
-    var parser = new rdruidMastery.Parser(fight, 1, [], events);
+    var parser = new rdruidMastery.Parser(fight, 1, [{id: 1, name: 'P1'}, {id: 2, name: 'P2'}], events, []);
     parser.parse();
 
     t.deepEqual(parser.masteryStacks, {
@@ -102,7 +102,7 @@ test('simple fight, 2 targets, removebuff, end of fight', function (t) {
         {timestamp: 5 * 1000, type: 'removebuff', sourceID: 1, targetID: 1, ability: {name: 'Rejuvenation', guid: 1}}
     ];
 
-    var parser = new rdruidMastery.Parser(fight, 1, [], events);
+    var parser = new rdruidMastery.Parser(fight, 1, [{id: 1, name: 'P1'}, {id: 2, name: 'P2'}], events, []);
     parser.parse();
 
     t.deepEqual(parser.masteryStacks, {
@@ -137,7 +137,7 @@ test('simple fight, 2 druids, 2 targets, removebuff, end of fight', function (t)
         {timestamp: 5 * 1000, type: 'removebuff', sourceID: 2, targetID: 1, ability: {name: 'Rejuvenation', guid: 1}}
     ];
 
-    var parser = new rdruidMastery.Parser(fight, 1, [], events);
+    var parser = new rdruidMastery.Parser(fight, 1, [{id: 1, name: 'P1'}, {id: 2, name: 'P2'}], events, []);
     parser.parse();
 
     t.deepEqual(parser.masteryStacks, {
