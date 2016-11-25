@@ -5,7 +5,8 @@ angular.module('rdruid-mastery', [
 angular.module('rdruid-mastery').run(
     function($rootScope, $state, $log) {
         // used to invalidate old parser results
-        $rootScope.RESULTS_VERSION = 'v1.0.0';
+        $rootScope.RESULTS_VERSION = 'v1.1.0';
+        $rootScope.STORE_RESULTS = true;
 
         // use to modify the class on the <body>
         $rootScope.bodyClass = [];
@@ -89,18 +90,23 @@ angular.module('rdruid-mastery').config(
                 controller: "MasteryAnalyzerChooseFightCtrl",
                 templateUrl: "templates/mastery-analyzer/choose-fight.html"
             })
+            .state('app.mastery-analyzer.choose-character', {
+                url: "/choose-character?reportID&fightID",
+                controller: "MasteryAnalyzerChooseCharacterCtrl",
+                templateUrl: "templates/mastery-analyzer/choose-character.html"
+            })
             .state('app.mastery-analyzer.download-fight', {
-                url: "/download-fight?reportID&fightID",
+                url: "/download-fight?reportID&fightID&actorID",
                 controller: "MasteryAnalyzerDownloadFightCtrl",
                 templateUrl: "templates/mastery-analyzer/download-fight.html"
             })
             .state('app.mastery-analyzer.parse-fight', {
-                url: "/parse-fight?reportID&fightID",
+                url: "/parse-fight?reportID&fightID&actorID",
                 controller: "MasteryAnalyzerParseFightCtrl",
                 templateUrl: "templates/mastery-analyzer/parse-fight.html"
             })
             .state('app.mastery-analyzer.result', {
-                url: "/result?reportID&fightID",
+                url: "/result?reportID&fightID&actorID",
                 controller: "MasteryAnalyzerResultCtrl",
                 templateUrl: "templates/mastery-analyzer/result.html"
             })
