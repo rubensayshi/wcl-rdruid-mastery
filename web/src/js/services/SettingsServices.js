@@ -1,7 +1,6 @@
 angular.module('rdruid-mastery').service('settingsService', function($rootScope, $q) {
     var defaults = {
         apikey: "",
-        character: "",
         reports: [],
         results: {},
         ignoreFriendlies: {}

@@ -36,8 +36,15 @@
                         Previously parsed fights:
                         <div style="margin-left: 30px;">
                             <div ng-repeat="fight in report.fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
-                                {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
-                                <button ng-click="chooseFight(fight, report.id)">show result</button>
+                                <div>
+                                    [{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
+                                    <button ng-click="chooseFight(fight, report.id)">choose character</button>
+                                </div>
+                                <div class="row" ng-if="fight.actors">
+                                    <div class="col-xs-offset-1 col-xs-11" ng-repeat="actor in fight.actors">
+                                        - {{ actor.name }} <button ng-click="chooseFriendly(actor, fight.id, report.id)">analyze</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

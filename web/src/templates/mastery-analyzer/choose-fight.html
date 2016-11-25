@@ -22,8 +22,8 @@
                     </div>
                 </div>
                 <div ng-repeat="fight in fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
-                    {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
-                    <button ng-click="chooseFight(fight)">{{ hasResults && 'show results' || 'analyze' }}</button>
+                    [{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
+                    <button ng-click="chooseFight(fight)">analyze</button>
                 </div>
             </div>
         </div>
