@@ -343,10 +343,6 @@ angular.module('rdruid-mastery')
 
         $scope.wclapi().getFights($scope.state.reportID).then(
             function(fights) {
-                fights.forEach(function(fight) {
-                    // fight.hasResults = (typeof settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightID(fight.id, $scope.state.reportID)] !== "undefined");
-                });
-
                 $timeout(function() {
                     $scope.fights = fights;
                     $scope.loading = false;
