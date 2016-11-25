@@ -127,7 +127,7 @@ else {
 
                                         // need short timeout for `debug` to flush
                                         setTimeout(function() {
-                                            def.resolve(parser.masteryStacks);
+                                            def.resolve(parser.statBenefits);
                                         }, 100);
                                     } catch (e) {
                                         // need short timeout for `debug` to flush
@@ -138,46 +138,15 @@ else {
 
                                     return def.promise;
                                 })
-                                .then(function(masteryStacks) {
-                                    var table = new Table({
-                                        head: ['Stacks', 'time', '%', 'cummul time', 'cummul %']
-                                        , colWidths: [8, 10, 10, 10, 10]
-                                    });
+                                .then(function(statBenefits) {
+                                    var masteryHPS = statBenefits.mastery.events.reduce(function(a, b) { return (a.hpsPerPoint || a) + b.hpsPerPoint; }, 0);
+                                    var masteryAverage = masteryHPS / statBenefits.mastery.events.length;
 
-                                    // sum up the total HoT time
-                                    var total = 0;
-                                    for (var i = 1; i <= rdruidMastery.Parser.MAX_HOTS; i++) {
-                                        total += masteryStacks[i];
-                                    }
-
-                                    // weighted time (for avg HoTs calc)
-                                    var avgsum = 0;
-                                    // cummulative time
-                                    var cummul = 0;
-
-                                    // loop from high to low
-                                    for (var i = rdruidMastery.Parser.MAX_HOTS; i > 0; i--) {
-                                        var stacks = i;
-                                        var time = masteryStacks[stacks];
-
-                                        // add time to cummulative time
-                                        cummul += time;
-
-                                        // add time to weighted time
-                                        avgsum += (stacks * time);
-
-                                        // don't start printing until we have something to print
-                                        if (cummul > 0) {
-                                            table.push([
-                                                stacks,
-                                                (time / 1000).toFixed(1) + "s", (time / total * 100).toFixed(1) + "%",
-                                                (cummul / 1000).toFixed(1) + "s", (cummul / total * 100).toFixed(1) + "%"
-                                            ]);
-                                        }
-                                    }
-
-                                    console.log(table.toString());
-                                    console.log("average HoTs on target: " + (avgsum / total));
+                                    var critHPS = statBenefits.crit.events.filter(Boolean).reduce(function(a, b) { return (a.hpsPerPoint || a) + b.hpsPerPoint; }, 0);
+                                    var critAverage = critHPS / statBenefits.crit.events.length;
+                                    console.log('Mastery Avg. Healing Per Event: ' + masteryAverage + '.');
+                                    console.log('Crit Avg. Healing Per Event: ' + critAverage + '.');
+                                    
                                 })
                             ;
                         })
