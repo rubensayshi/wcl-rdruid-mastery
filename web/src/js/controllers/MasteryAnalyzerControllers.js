@@ -394,6 +394,8 @@ angular.module('rdruid-mastery')
 
         var wclapi = $scope.wclapi();
 
+        $scope.progress = 0;
+
         wclapi.getFights($scope.state.reportID)
             .then(function(fights) {
                 // find the fight
@@ -420,6 +422,11 @@ angular.module('rdruid-mastery')
                     .then(function() {
                         // get all events
                         return wclapi.getEvents($scope.state.reportID, $scope.state.actorID, fight.start_time, fight.end_time)
+                            .progress(function(progress) {
+                                $timeout(function() {
+                                    $scope.progress++;
+                                });
+                            })
                             .then(function(events) {
                                 $scope.state.events = events;
 
