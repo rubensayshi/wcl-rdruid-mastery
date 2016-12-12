@@ -10,9 +10,9 @@ var yargs = require('yargs').argv;
 
 // get input
 var VERBOSE = yargs.output === "verbose";
-var APIKEY = yargs.apikey || process.env['WCL_RDRUID_APIKEY'] || process.env['WCL_APIKEY'];
-var REPORT = yargs.report || process.env['WCL_RDRUID_REPORT'];
-var CHARNAME = yargs.character || yargs.charname || process.env['WCL_RDRUID_CHARACTER'] || process.env['WCL_RDRUID_CHARNAME'];
+var APIKEY = yargs.apikey || process.env['WCL_RSHAMAN_APIKEY'] || process.env['WCL_APIKEY'];
+var REPORT = yargs.report || process.env['WCL_RSHAMAN_REPORT'];
+var CHARNAME = yargs.character || yargs.charname || process.env['WCL_RSHAMAN_CHARACTER'] || process.env['WCL_RSHAMAN_CHARNAME'];
 
 // validate input
 assert(APIKEY, "APIKEY or --apikey required");
@@ -139,14 +139,18 @@ else {
                                     return def.promise;
                                 })
                                 .then(function(statBenefits) {
-                                    var masteryHPS = statBenefits.mastery.events.reduce(function(a, b) { return (a.hpsPerPoint || a) + b.hpsPerPoint; }, 0);
+                                    var masteryHPS = statBenefits.mastery.events.reduce(function(a, b) { return (a.healingPerPoint || a) + b.healingPerPoint; }, 0);
                                     var masteryAverage = masteryHPS / statBenefits.mastery.events.length;
 
-                                    var critHPS = statBenefits.crit.events.filter(Boolean).reduce(function(a, b) { return (a.hpsPerPoint || a) + b.hpsPerPoint; }, 0);
+                                    var critHPS = statBenefits.crit.events.filter(Boolean).reduce(function(a, b) { return (a.healingPerPoint || a) + b.healingPerPoint; }, 0);
                                     var critAverage = critHPS / statBenefits.crit.events.length;
+
+                                    var versHPS = statBenefits.vers.events.filter(Boolean).reduce(function(a, b) { return (a.healingPerPoint || a) + b.healingPerPoint; }, 0);
+                                    var versAverage = versHPS / statBenefits.vers.events.length;
+
                                     console.log('Mastery Avg. Healing Per Event: ' + masteryAverage + '.');
                                     console.log('Crit Avg. Healing Per Event: ' + critAverage + '.');
-                                    
+                                    console.log('Vers Avg. Healing Per Event: ' + versAverage + '.');
                                 })
                             ;
                         })
