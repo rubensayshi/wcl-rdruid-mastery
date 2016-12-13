@@ -148,6 +148,10 @@ else {
                                     var versHPS = statBenefits.vers.events.filter(Boolean).reduce(function(a, b) { return (a.healingPerPoint || a) + b.healingPerPoint; }, 0);
                                     var versAverage = versHPS / statBenefits.vers.events.length;
 
+                                    var intHPS = statBenefits.int.events.filter(Boolean).reduce(function(a, b) { return (a.healingPerPoint || a) + b.healingPerPoint; }, 0);
+                                    var intAverage = intHPS / statBenefits.int.events.length;
+
+                                    console.log('Intellect Avg. Healing Per Event: ' + intAverage + '.');
                                     console.log('Mastery Avg. Healing Per Event: ' + masteryAverage + '.');
                                     console.log('Crit Avg. Healing Per Event: ' + critAverage + '.');
                                     console.log('Vers Avg. Healing Per Event: ' + versAverage + '.');
