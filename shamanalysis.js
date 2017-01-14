@@ -154,7 +154,16 @@ else {
                                     console.log('Intellect Avg. Healing Per Event: ' + intAverage + '.');
                                     console.log('Mastery Avg. Healing Per Event: ' + masteryAverage + '.');
                                     console.log('Crit Avg. Healing Per Event: ' + critAverage + '.');
-                                    console.log('Vers Avg. Healing Per Event: ' + versAverage + '.');
+                                    console.log('Vers Avg. Healing Per Event: ' + versAverage + '.\n');
+
+                                    console.log('Weights normalized for Intellect:')
+                                    console.log('Int weight: ' + intAverage/intAverage);
+                                    console.log('Mastery weight: ' + masteryAverage/intAverage);
+                                    console.log('Crit weight: ' + critAverage/intAverage);
+                                    console.log('Vers weight: ' + versAverage/intAverage);
+                                    console.log('Haste cannot be weighted using this tool, it should be seen as less valuable but not worthless.\n')
+                                    console.log(`( Pawn: v1: "PvE-Shaman-Resto": Class=Shaman, Spec=2, CritRating=${critAverage/intAverage}, MasteryRating=${masteryAverage/intAverage}, Intellect=${intAverage/intAverage}, HasteRating=pref, Versatility=${versAverage/intAverage})
+`)
                                 })
                             ;
                         })
