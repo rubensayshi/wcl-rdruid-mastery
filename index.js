@@ -2,5 +2,6 @@
 module.exports = exports = {
     leveldb: require('level-browserify'),
     Parser: require('./lib/parser'),
-    WCLAPI: require('./lib/wclapi')
+    WCLAPI: require('./lib/wclapi'),
+    leveljs: require('level-js')
 };

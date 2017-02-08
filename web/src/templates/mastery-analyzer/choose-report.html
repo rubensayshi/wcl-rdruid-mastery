@@ -1,48 +1,57 @@
 <div class="row">
-    <div class="col-xs-8">
+    <div class="col-xs-12 col-md-8">
         <div class="well" ng-if="loading">
             <div class="well">
                 LOADING ...
             </div>
         </div>
         <div ng-if="!loading">
-            <div class="well">
-                This is where you manage the reports you want to analyze and have analyzed in the past.
-            </div>
-
-            <div class="well">
-                <div class="row">
-                    <div class="col-xs-8"><h3>Choose Report</h3></div>
-                    <div class="col-xs-4">
-                        <div class="well">
-                            <input type="checkbox" ng-model="onlyBosses" /> only bosses
-                            <br />
-                            <input type="checkbox" ng-model="onlyKills" /> only kills
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">This is where you manage the reports you want to analyze and have analyzed in the past</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-xs-8"><h3>Choose Report</h3></div>
+                        <div class="col-xs-4">
+                            <div class="well">
+                                <input type="checkbox" ng-model="onlyBosses" /> only bosses
+                                <br />
+                                <input type="checkbox" ng-model="onlyKills" /> only kills
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div ng-if="reports.length === 0" class="well">
-                    No reports analyzed yet.
-                </div>
-                <div ng-repeat="report in reports" class="well" style="margin-top: 10px;">
-                    <div>
-                        <h4>
-                            Report: {{ report.name }}
-                            <button ng-click="chooseReport(report)">list fights</button>
-                        </h4>
+                    <div ng-if="reports.length === 0" class="well">
+                        No reports analyzed yet.
                     </div>
+                    <div class="panel panel-default"
+                         ng-repeat="report in reports track by report.id">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                Report: {{ report.name }}
+                                <button class="btn btn-primary btn-sm" ng-click="chooseReport(report)">list fights</button>
+                                <button class="btn btn-danger btn-sm" ng-click="deleteReport(report)">delete report</button>
+                            </h3>
+                        </div>
+                        <div class="panel-body"
+                             ng-if="report.fights">
+                            <h4>Previously parsed fights:</h4>
+                            <div class="list-group">
+                                <div class="list-group-item"
+                                     ng-repeat="fight in report.fights"
+                                     ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
 
-                    <div ng-if="report.fights" class="well">
-                        Previously parsed fights:
-                        <div style="margin-left: 30px;">
-                            <div ng-repeat="fight in report.fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
-                                <div>
-                                    [{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
-                                    <button ng-click="chooseFight(fight, report.id)">choose character</button>
-                                </div>
-                                <div class="row" ng-if="fight.actors">
-                                    <div class="col-xs-offset-1 col-xs-11" ng-repeat="actor in fight.actors">
-                                        - {{ actor.name }} <button ng-click="chooseFriendly(actor, fight.id, report.id)">analyze</button>
+                                    <h5>[{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%</h5>
+
+                                    <div class="list-group">
+                                    <div ng-if="fight.actors">
+                                            <a href class="list-group-item"
+                                                 ng-repeat="actor in fight.actors"
+                                                 ng-click="chooseFriendly(actor, fight.id, report.id)">
+                                                {{ actor.name }}
+                                                <span class="badge">analyze</span>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -52,21 +61,25 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-4">
-        <div class="well">
-            <h3>Add New Report</h3>
-            <p>
-                Paste in the URL of the report or just the identifier.
-            </p>
-            <form>
-                <div class="form-group">
-                    <label>REPORTID</label>
-                    <input class="form-control" type="text" ng-model="state.reportID"/>
-                </div>
-                <div>
-                    <button class="btn btn-primary btn-block" ng-click="addReport(state.reportID)">ADD</button>
-                </div>
-            </form>
+    <div class="col-xs-12 col-md-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Add New Report</h3>
+            </div>
+            <div class="panel-body">
+                <p>
+                    Paste in the URL of the report or just the identifier.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <label>REPORTID</label>
+                        <input class="form-control" type="text" ng-model="state.reportID"/>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary btn-block" ng-click="addReport(state.reportID)">ADD</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

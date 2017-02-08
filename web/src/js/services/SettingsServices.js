@@ -10,6 +10,7 @@ angular.module('rdruid-mastery').service('settingsService', function($rootScope,
     var STORAGEID = "settings";
 
     var storage = rdruidMastery.leveldb('./settings.leveldb');
+    this.storage = storage;
 
     var normalizeVersion = function(v) {
         return parseInt(v.match(/^v(\d)\.(\d)\.(\d)$/).map(function(v) {

@@ -15,8 +15,6 @@ angular.module('rdruid-mastery')
             parser: null
         };
 
-        settingsService.results[$scope.RESULTS_VERSION] = {};
-
         $scope.state.apikey = settingsService.apikey;
         $scope.state.character = settingsService.character;
 
@@ -233,6 +231,9 @@ angular.module('rdruid-mastery')
             if (typeof settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()] !== "undefined") {
                 if ($state.is('app.mastery-analyzer.result')) {
                     return true;
+                } else {
+                    $state.go('app.mastery-analyzer.result');
+                    return false;
                 }
             }
 
@@ -255,6 +256,15 @@ angular.module('rdruid-mastery')
             }
 
             return true;
+        };
+
+        $scope.logout = function() {
+            rdruidMastery.leveljs.destroy(settingsService.storage.db);
+            rdruidMastery.leveljs.destroy(requestcache.db);
+
+            setTimeout(function() {
+                window.location.reload();
+            }, 300);
         }
     });
 
@@ -326,6 +336,14 @@ angular.module('rdruid-mastery')
             return $state.go('app.mastery-analyzer.choose-fight', {
                 reportID: report.id
             });
+        };
+
+        $scope.deleteReport = function(report) {
+            $scope.reports = settingsService.reports = settingsService.reports.filter(function(_report) {
+                return report.id !== _report.id;
+            });
+
+            return settingsService.$store();
         };
     });
 
@@ -441,7 +459,7 @@ angular.module('rdruid-mastery')
 
 
 angular.module('rdruid-mastery')
-    .controller('MasteryAnalyzerParseFightCtrl', function($scope, $state, $timeout, $stateParams, settingsService) {
+    .controller('MasteryAnalyzerParseFightCtrl', function($scope, $state, $q, $timeout, $stateParams, settingsService) {
         if (!$scope.checkState($stateParams)) {
             return;
         }
@@ -473,40 +491,48 @@ angular.module('rdruid-mastery')
             $timeout(function() {
                 $scope.loading = false;
                 $scope.parsing = true;
-                $scope.state.parser.parse();
 
-                if ($scope.STORE_RESULTS) {
-                    settingsService.reports.forEach(function(report) {
-                        if (report.id === $scope.state.reportID) {
-                            if (typeof report.fightsWithResults[$scope.state.fightID] === "undefined") {
-                                report.fightsWithResults[$scope.state.fightID] = {
-                                    name: $scope.state.fight.name,
-                                    id: $scope.state.fight.id,
-                                    actors: []
-                                };
-                            }
-
-                            if (report.fightsWithResults[$scope.state.fightID].actors.map(function(actor) { return actor.id; }).indexOf($scope.state.actorID) === -1) {
-                                report.fightsWithResults[$scope.state.fightID].actors.push({
-                                    id: $scope.state.actorID,
-                                    name: $scope.state.actorName
-                                });
-                            }
-                        }
-                    });
-
-                    settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()] = {
-                        masteryStacks: $scope.state.parser.masteryStacks
-                    };
+                try {
+                    $scope.state.parser.parse();
+                } catch (e) {
+                    alert(e);
+                    throw e;
                 }
 
-                settingsService.$store().then(function() {
-                    $state.go('app.mastery-analyzer.result', {
-                        reportID: $scope.state.reportID,
-                        fightID: $scope.state.fightID,
-                        actorID: $scope.state.actorID
+                $q.when()
+                    .then(function() {
+                        if ($scope.STORE_RESULTS) {
+                            settingsService.reports.forEach(function(report) {
+                                if (report.id === $scope.state.reportID) {
+                                    if (typeof report.fightsWithResults[$scope.state.fightID] === "undefined") {
+                                        report.fightsWithResults[$scope.state.fightID] = {
+                                            name: $scope.state.fight.name,
+                                            id: $scope.state.fight.id,
+                                            actors: []
+                                        };
+                                    }
+
+                                    if (report.fightsWithResults[$scope.state.fightID].actors.map(function(actor) { return actor.id; }).indexOf($scope.state.actorID) === -1) {
+                                        report.fightsWithResults[$scope.state.fightID].actors.push({
+                                            id: $scope.state.actorID,
+                                            name: $scope.state.actorName
+                                        });
+                                    }
+                                }
+                            });
+
+                            settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()] = $scope.state.parser.result();
+
+                            return settingsService.$store();
+                        }
+                    })
+                    .then(function() {
+                        $state.go('app.mastery-analyzer.result', {
+                            reportID: $scope.state.reportID,
+                            fightID: $scope.state.fightID,
+                            actorID: $scope.state.actorID
+                        });
                     });
-                });
             });
         };
 
@@ -540,51 +566,9 @@ angular.module('rdruid-mastery')
             return;
         }
 
-        var masteryStacks;
-        if ($scope.state.parser && $scope.state.parser.masteryStacks) {
-            masteryStacks = $scope.state.parser.masteryStacks;
-        } else if (typeof settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()] !== "undefined") {
-            masteryStacks = settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()].masteryStacks;
+        if (typeof settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()] !== "undefined") {
+            $scope.result = settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()];
         } else {
-            throw new Error();
+            $scope.result = $scope.state.parser.result();
         }
-
-        var table = [];
-
-        // sum up the total HoT time
-        var total = 0;
-        for (var i = 1; i <= rdruidMastery.Parser.MAX_HOTS; i++) {
-            total += masteryStacks[i];
-        }
-
-        // weighted time (for avg HoTs calc)
-        var avgsum = 0;
-        // cummulative time
-        var cummul = 0;
-
-        // loop from high to low
-        for (var i = rdruidMastery.Parser.MAX_HOTS; i > 0; i--) {
-            var stacks = i;
-            var time = masteryStacks[stacks];
-
-            // add time to cummulative time
-            cummul += time;
-
-            // add time to weighted time
-            avgsum += (stacks * time);
-
-            // don't start printing until we have something to print
-            if (cummul > 0) {
-                table.push({
-                    stacks: stacks,
-                    time: (time / 1000),
-                    percentage: (time / total * 100),
-                    ctime: (cummul / 1000),
-                    cpercentage: (cummul / total * 100)
-                });
-            }
-        }
-
-        $scope.table = table;
-        $scope.avghots = (avgsum / total);
     });

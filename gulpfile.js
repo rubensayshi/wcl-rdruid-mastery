@@ -92,7 +92,7 @@ gulp.task('watch', function() {
     gulp.watch(['./web/src/sass/**/*.scss'], ['sass:livereload']);
     gulp.watch(['./web/src/img/**/*', './web/src/font/**/*'], ['copystatics:livereload']);
     gulp.watch(['./web/src/js/**/*.js'], ['js:app:livereload']);
-    gulp.watch(['./lib/**/*.js'], ['js:browserify-lib:livereload']);
+    gulp.watch(['./lib/**/*.js', './index.js'], ['js:browserify-lib:livereload']);
     gulp.watch(['./web/src/templates/**/*', './web/src/translations/translations/**/*', './web/src/index.html'], ['templates:livereload']);
 });
 
