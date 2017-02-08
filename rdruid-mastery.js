@@ -116,18 +116,26 @@ else {
                     return wclapi.getActorID(REPORT, CHARNAME)
                         .then(function(actorID) {
                             // get all events
-                            return wclapi.getEvents(REPORT, actorID, fight.start_time, fight.end_time)
+
+                            var s = fight.start_time;
+                            var e = fight.end_time;
+
+                            // s = s + (170 * 1000);
+                            // e = s + (190 * 1000);
+
+                            return wclapi.getEvents(REPORT, actorID, s, e)
                                 .then(function(events) {
 
                                     var def = q.defer();
 
                                     try {
                                         var parser = new rdruidMastery.Parser(fight, actorID, friendlies, events, IGNORE);
+                                        console.log('start: ' + parser.fight.start_time);
                                         parser.parse();
 
                                         // need short timeout for `debug` to flush
                                         setTimeout(function() {
-                                            def.resolve(parser.masteryStacks);
+                                            def.resolve(parser);
                                         }, 100);
                                     } catch (e) {
                                         // need short timeout for `debug` to flush
@@ -138,46 +146,70 @@ else {
 
                                     return def.promise;
                                 })
-                                .then(function(masteryStacks) {
-                                    var table = new Table({
-                                        head: ['Stacks', 'time', '%', 'cummul time', 'cummul %']
-                                        , colWidths: [8, 10, 10, 10, 10]
-                                    });
+                                .then(function(parser) {
+                                    var masteryStacksTime = parser.masteryStacksTime;
+                                    var masteryStacksHealing = parser.masteryStacksHealing;
 
-                                    // sum up the total HoT time
-                                    var total = 0;
-                                    for (var i = 1; i <= rdruidMastery.Parser.MAX_HOTS; i++) {
-                                        total += masteryStacks[i];
-                                    }
+                                    var renderMasteryStacksTable = function(masteryStacks, isTime) {
+                                        var table = new Table({
+                                            head: ['Stacks', isTime ? 'time' : 'healing', '%', 'cummul time', 'cummul %']
+                                            , colWidths: [8, 10, 10, 10, 10]
+                                        });
 
-                                    // weighted time (for avg HoTs calc)
-                                    var avgsum = 0;
-                                    // cummulative time
-                                    var cummul = 0;
-
-                                    // loop from high to low
-                                    for (var i = rdruidMastery.Parser.MAX_HOTS; i > 0; i--) {
-                                        var stacks = i;
-                                        var time = masteryStacks[stacks];
-
-                                        // add time to cummulative time
-                                        cummul += time;
-
-                                        // add time to weighted time
-                                        avgsum += (stacks * time);
-
-                                        // don't start printing until we have something to print
-                                        if (cummul > 0) {
-                                            table.push([
-                                                stacks,
-                                                (time / 1000).toFixed(1) + "s", (time / total * 100).toFixed(1) + "%",
-                                                (cummul / 1000).toFixed(1) + "s", (cummul / total * 100).toFixed(1) + "%"
-                                            ]);
+                                        // sum up the total value
+                                        var total = 0;
+                                        for (var i = 1; i <= rdruidMastery.Parser.MAX_HOTS; i++) {
+                                            total += masteryStacks[i];
                                         }
-                                    }
 
-                                    console.log(table.toString());
-                                    console.log("average HoTs on target: " + (avgsum / total));
+                                        // weighted (for avg HoTs calc)
+                                        var avgsum = 0;
+                                        // cummulative
+                                        var cummul = 0;
+
+                                        // loop from high to low
+                                        for (var i = rdruidMastery.Parser.MAX_HOTS; i > 0; i--) {
+                                            var stacks = i;
+                                            var value = masteryStacks[stacks];
+
+                                            // add time to cummulative
+                                            cummul += value;
+
+                                            // add time to weighted
+                                            avgsum += (stacks * value);
+
+                                            // don't start printing until we have something to print
+                                            if (cummul > 0) {
+                                                if (isTime) {
+                                                    table.push([
+                                                        stacks,
+                                                        (value / 1000).toFixed(1) + "s", ((value / total) * 100).toFixed(1) + "%",
+                                                        (cummul / 1000).toFixed(1) + "s", ((cummul / total) * 100).toFixed(1) + "%"
+                                                    ]);
+                                                } else {
+                                                    table.push([
+                                                        stacks,
+                                                        value.toFixed(0) + "", ((value / total) * 100).toFixed(1) + "%",
+                                                        cummul.toFixed(0) + "", ((cummul / total) * 100).toFixed(1) + "%"
+                                                    ]);
+                                                }
+                                            }
+                                        }
+
+                                        console.log(table.toString());
+                                        console.log("average HoTs on target: " + (avgsum / total));
+                                    };
+
+                                    console.log("total rejuv ticks: " + parser.rejuvTicks);
+                                    console.log("magic rejuvs: " + parser.magicRejuvs + " (" + ((parser.magicRejuvs / parser.rejuvTicks) * 100).toFixed(2) + "%)");
+                                    console.log("4pc healing done: " + parser.tier204pcHealing + " (" + ((parser.tier204pcHealing / parser.totalHealing) * 100).toFixed(2) + "%)");
+
+                                    console.log("tearstone healing done: " + parser.tearstoneHealing + " (" + ((parser.tearstoneHealing / parser.totalHealing) * 100).toFixed(2) + "%)");
+
+                                    console.log("total healing done: " + parser.totalHealing);
+                                    console.log("PotA healing done: " + parser.PotA.healing + " " + ((parser.PotA.healing / parser.totalHealing) * 100).toFixed(1) + "%");
+                                    renderMasteryStacksTable(masteryStacksTime, true);
+                                    renderMasteryStacksTable(masteryStacksHealing, false);
                                 })
                             ;
                         })

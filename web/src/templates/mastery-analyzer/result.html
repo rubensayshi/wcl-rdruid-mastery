@@ -2,29 +2,147 @@
     <div class="col-xs-12">
         <h1>RESULT!</h1>
 
-        <div class="well">
-            {{ avghots | number:2 }} avg HoTs on target
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Total Healing Done</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{ result.totalHealing }} healing done <br />
+                        {{ result.totalOverhealing }} overhealing done, {{ ((result.totalOverhealing / result.totalHealing) * 100) | number:1 }}% <br />
+                        {{ result.rejuvCasts }} rejuvs casted, {{ result.rejuvTicks }} rejuv ticks
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Magic Rejuvs</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{ result.magicRejuvs }} rejuvs we were unable to figure out where they came from
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Power of the Archdruid</h3>
+                    </div>
+                    <div class="panel-body">
+                        {{ result.PotA.rejuvs }} bonus rejuvs,
+                        {{ result.PotA.regrowths }} bonus regrowths <br />
+                        {{ result.PotA.healing }} healing done, {{ ((result.PotA.healing / result.totalHealing) * 100) | number:1 }}%
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <td>stacks</td>
-                    <td>time</td>
-                    <td>%</td>
-                    <td>cummul time</td>
-                    <td>cummul %</td>
-                </tr>
-            </thead>
-            <tbody>
-            <tr ng-repeat="row in table">
-                <td>{{ row.stacks }} stacks</td>
-                <td>{{ row.time | number:1 }}</td>
-                <td>{{ row.percentage | number:1 }}%</td>
-                <td>{{ row.ctime | number:1 }}</td>
-                <td>{{ row.cpercentage | number:1 }}%</td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Tearstone</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-if="!result.tearstone">
+                            Tearstone so gud! how can you not have one?
+                        </div>
+                        <div ng-if="result.tearstone">
+                            {{ result.tearstoneRejuvs }} bonus rejuvs <br />
+                            {{ result.tearstoneHealing }} healing done, {{ ((result.tearstoneHealing / result.totalHealing) * 100) | number:1 }}% <br />
+                            {{ result.tearstoneOverhealing }} overhealing done, {{ ((result.tearstoneOverhealing / result.tearstoneHealing) * 100) | number:1 }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Tier20 4pc</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-if="!result.tier204pc">
+                            Slack much? go PuG some HC to get 4pc tier20!
+                        </div>
+                        <div ng-if="result.tier204pc">
+                            {{ result.tier204pcRejuvs }} bonus rejuvs <br />
+                            {{ result.tier204pcHealing }} healing done, {{ ((result.tier204pcHealing / result.totalHealing) * 100) | number:1 }}%<br />
+                            {{ result.tier204pcOverhealing }} healing done, {{ ((result.tier204pcOverhealing / result.tier204pcHealing) * 100) | number:1 }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Mastery Stacks (weighted by time)</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="well">
+                            {{ result.masteryStacksTime.avghots | number:2 }} avg HoTs on target
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td>stacks</td>
+                                <td>time</td>
+                                <td>%</td>
+                                <td>cummul time</td>
+                                <td>cummul %</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in result.masteryStacksTime.table">
+                                <td>{{ row.stacks }} stacks</td>
+                                <td>{{ (row.value / 1000) | number:1 }}</td>
+                                <td>{{ row.percentage | number:1 }}%</td>
+                                <td>{{ (row.cvalue / 1000) | number:1 }}</td>
+                                <td>{{ row.cpercentage | number:1 }}%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Mastery Stacks (weighted by healing done)</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="well">
+                            {{ result.masteryStacksHealing.avghots | number:2 }} avg HoTs on target weighted by healing
+                        </div>
+
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <td>stacks</td>
+                                <td>healing done</td>
+                                <td>%</td>
+                                <td>cummul healing done</td>
+                                <td>cummul %</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="row in result.masteryStacksHealing.table">
+                                <td>{{ row.stacks }} stacks</td>
+                                <td>{{ row.value | number:1 }}</td>
+                                <td>{{ row.percentage | number:1 }}%</td>
+                                <td>{{ row.cvalue | number:1 }}</td>
+                                <td>{{ row.cpercentage | number:1 }}%</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
