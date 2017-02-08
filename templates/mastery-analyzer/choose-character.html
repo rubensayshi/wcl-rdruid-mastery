@@ -1,0 +1,40 @@
+<div class="row">
+    <div class="col-xs-8">
+        <div class="well" ng-if="loading">
+            <div class="well">
+                LOADING ...
+            </div>
+        </div>
+        <div ng-if="!loading">
+            <div class="well">
+                Choose which character you want to analyze.
+            </div>
+
+            <div class="well">
+                <div class="row">
+                    <div class="col-xs-12"><h3>Choose Character</h3></div>
+                </div>
+                <div ng-repeat="friendly in friendlies">
+                    {{ friendly.name }} <button ng-click="chooseFriendly(friendly)">analyze</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-4">
+        <div class="well">
+            <h3>Add New Report</h3>
+            <p>
+                Paste in the URL of the report or just the identifier.
+            </p>
+            <form>
+                <div class="form-group">
+                    <label>REPORTID</label>
+                    <input class="form-control" type="text" ng-model="state.reportID"/>
+                </div>
+                <div>
+                    <button class="btn btn-primary btn-block" ng-click="addReport(state.reportID)">ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

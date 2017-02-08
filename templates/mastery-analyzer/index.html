@@ -3,11 +3,11 @@
         <ol class="breadcrumb">
             <li><a href ng-click="gotoInput()">Mastery Analyzer</a></li>
             <!-- character -->
-            <li ng-if="state.character && !state.reportID" class="active">
-                {{ state.character }}
+            <li ng-if="!state.reportID" class="active">
+                Reports
             </li>
-            <li ng-if="state.character && state.reportID">
-                <a href ng-click="gotoChooseReport()">{{ state.character }}</a>
+            <li ng-if="state.reportID">
+                <a href ng-click="gotoChooseReport()">Reports</a>
             </li>
             <!-- report -->
             <li ng-if="state.reportID && !state.fight" class="active">
@@ -17,8 +17,15 @@
                 <a href ng-click="gotoChooseFight()">{{ state.reportID }}</a>
             </li>
             <!-- fight -->
-            <li ng-if="state.fight" class="active">
-                {{ state.fight.name }}
+            <li ng-if="state.fight && !state.actorID" class="active">
+                [{{ state.fightID }}] {{ state.fight.name }}
+            </li>
+            <li ng-if="state.fight && state.actorID">
+                <a href ng-click="gotoChooseCharacter()">[{{ state.fightID }}] {{ state.fight.name }}</a>
+            </li>
+            <!-- character -->
+            <li ng-if="state.actorID" class="active">
+                {{ state.actorName || state.actorID }}
             </li>
         </ol>
     </div>
