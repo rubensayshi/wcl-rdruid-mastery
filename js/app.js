@@ -458,7 +458,10 @@ angular.module('rdruid-mastery')
         $scope.logout = function() {
             rdruidMastery.leveljs.destroy(settingsService.storage.db);
             rdruidMastery.leveljs.destroy(requestcache.db);
-            window.location.reload();
+
+            setTimeout(function() {
+                window.location.reload();
+            }, 300);
         }
     }]);
 
