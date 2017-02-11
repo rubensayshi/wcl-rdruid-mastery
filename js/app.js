@@ -525,6 +525,14 @@ angular.module('rdruid-mastery')
                 reportID: report.id
             });
         };
+
+        $scope.deleteReport = function(report) {
+            $scope.reports = settingsService.reports = settingsService.reports.filter(function(_report) {
+                return report.id !== _report.id;
+            });
+
+            return settingsService.$store();
+        };
     }]);
 
 

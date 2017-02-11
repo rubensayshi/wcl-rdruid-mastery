@@ -10,8 +10,13 @@
                 <h3 class="panel-title">Choose which character you want to analyze</h3>
             </div>
             <div class="panel-body">
-                <div class="row" ng-repeat="friendly in friendlies">
-                    <a href="#" class="btn" ng-click="chooseFriendly(friendly)">analyze [ {{ friendly.name }} ]</a>
+                <div class="list-group">
+                    <a href class="list-group-item"
+                       ng-click="chooseFriendly(friendly)"
+                       ng-repeat="friendly in friendlies">
+                        {{ friendly.name }}
+                        <span class="badge">analyze</span>
+                    </a>
                 </div>
             </div>
         </div>

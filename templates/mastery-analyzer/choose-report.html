@@ -24,25 +24,33 @@
                     <div ng-if="reports.length === 0" class="well">
                         No reports analyzed yet.
                     </div>
-                    <div ng-repeat="report in reports track by report.id" class="well" style="margin-top: 10px;">
-                        <div>
-                            <h4>
+                    <div class="panel panel-default"
+                         ng-repeat="report in reports track by report.id">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
                                 Report: {{ report.name }}
-                                <button ng-click="chooseReport(report)">list fights</button>
-                            </h4>
+                                <button class="btn btn-primary btn-sm" ng-click="chooseReport(report)">list fights</button>
+                                <button class="btn btn-danger btn-sm" ng-click="deleteReport(report)">delete report</button>
+                            </h3>
                         </div>
+                        <div class="panel-body"
+                             ng-if="report.fights">
+                            <h4>Previously parsed fights:</h4>
+                            <div class="list-group">
+                                <div class="list-group-item"
+                                     ng-repeat="fight in report.fights"
+                                     ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
 
-                        <div ng-if="report.fights" class="well">
-                            Previously parsed fights:
-                            <div style="margin-left: 30px;">
-                                <div ng-repeat="fight in report.fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
-                                    <div>
-                                        [{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
-                                        <button ng-click="chooseFight(fight, report.id)">choose character</button>
-                                    </div>
-                                    <div class="row" ng-if="fight.actors">
-                                        <div class="col-xs-offset-1 col-xs-11" ng-repeat="actor in fight.actors">
-                                            - {{ actor.name }} <button ng-click="chooseFriendly(actor, fight.id, report.id)">analyze</button>
+                                    <h5>[{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%</h5>
+
+                                    <div class="list-group">
+                                    <div ng-if="fight.actors">
+                                            <a href class="list-group-item"
+                                                 ng-repeat="actor in fight.actors"
+                                                 ng-click="chooseFriendly(actor, fight.id, report.id)">
+                                                {{ actor.name }}
+                                                <span class="badge">analyze</span>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
