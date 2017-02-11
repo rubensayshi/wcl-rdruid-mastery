@@ -1,29 +1,32 @@
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-xs-12 col-md-8">
         <div ng-if="loading">
             <div class="well">
                 LOADING FIGHTS ...
             </div>
         </div>
         <div ng-if="!loading">
-            <div class="well">
-                This is where you choose which fight to analyze.
-            </div>
-
-            <div class="well">
-                <div class="row">
-                    <div class="col-xs-8"><h3>Choose Fight</h3></div>
-                    <div class="col-xs-4">
-                        <div class="well">
-                            <input type="checkbox" ng-model="onlyBosses" /> only bosses
-                            <br />
-                            <input type="checkbox" ng-model="onlyKills" /> only kills
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">This is where you choose which fight to analyze</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="well">
+                        <div class="row">
+                            <div class="col-xs-8"><h3>Choose Fight</h3></div>
+                            <div class="col-xs-4">
+                                <div class="well">
+                                    <input type="checkbox" ng-model="onlyBosses" /> only bosses
+                                    <br />
+                                    <input type="checkbox" ng-model="onlyKills" /> only kills
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-repeat="fight in fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
+                            [{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
+                            <button ng-click="chooseFight(fight)">analyze</button>
                         </div>
                     </div>
-                </div>
-                <div ng-repeat="fight in fights" ng-if="(!onlyBosses || fight.boss) && (!onlyKills || fight.kill)">
-                    [{{ fight.id }}] {{ fight.name }} {{ fight.bossPercentage / 100 | number: 1 }}%
-                    <button ng-click="chooseFight(fight)">analyze</button>
                 </div>
             </div>
         </div>
