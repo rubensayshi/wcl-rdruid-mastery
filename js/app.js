@@ -6,7 +6,7 @@ angular.module('rdruid-mastery').run(
     ["$rootScope", "$state", "$log", function($rootScope, $state, $log) {
         // used to invalidate old parser results
         $rootScope.RESULTS_VERSION = 'v1.2.0';
-        $rootScope.STORE_RESULTS = true;
+        $rootScope.STORE_RESULTS = false;
 
         // use to modify the class on the <body>
         $rootScope.bodyClass = [];
