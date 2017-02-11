@@ -453,6 +453,12 @@ angular.module('rdruid-mastery')
             }
 
             return true;
+        };
+
+        $scope.logout = function() {
+            rdruidMastery.leveljs.destroy(settingsService.storage.db);
+            rdruidMastery.leveljs.destroy(requestcache.db);
+            window.location.reload();
         }
     }]);
 
@@ -681,38 +687,39 @@ angular.module('rdruid-mastery')
                 $scope.parsing = true;
 
                 try {
-                $scope.state.parser.parse();
+                    $scope.state.parser.parse();
                 } catch (e) {
                     alert(e);
                     throw e;
                 }
 
-                $q.when(function() {
-                    if ($scope.STORE_RESULTS) {
-                        settingsService.reports.forEach(function(report) {
-                            if (report.id === $scope.state.reportID) {
-                                if (typeof report.fightsWithResults[$scope.state.fightID] === "undefined") {
-                                    report.fightsWithResults[$scope.state.fightID] = {
-                                        name: $scope.state.fight.name,
-                                        id: $scope.state.fight.id,
-                                        actors: []
-                                    };
+                $q.when()
+                    .then(function() {
+                        if ($scope.STORE_RESULTS) {
+                            settingsService.reports.forEach(function(report) {
+                                if (report.id === $scope.state.reportID) {
+                                    if (typeof report.fightsWithResults[$scope.state.fightID] === "undefined") {
+                                        report.fightsWithResults[$scope.state.fightID] = {
+                                            name: $scope.state.fight.name,
+                                            id: $scope.state.fight.id,
+                                            actors: []
+                                        };
+                                    }
+
+                                    if (report.fightsWithResults[$scope.state.fightID].actors.map(function(actor) { return actor.id; }).indexOf($scope.state.actorID) === -1) {
+                                        report.fightsWithResults[$scope.state.fightID].actors.push({
+                                            id: $scope.state.actorID,
+                                            name: $scope.state.actorName
+                                        });
+                                    }
                                 }
+                            });
 
-                                if (report.fightsWithResults[$scope.state.fightID].actors.map(function(actor) { return actor.id; }).indexOf($scope.state.actorID) === -1) {
-                                    report.fightsWithResults[$scope.state.fightID].actors.push({
-                                        id: $scope.state.actorID,
-                                        name: $scope.state.actorName
-                                    });
-                                }
-                            }
-                        });
+                            settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()] = $scope.state.parser.result();
 
-                        settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()] = $scope.state.parser.result();
-
-                        return settingsService.$store();
-                    }
-                })
+                            return settingsService.$store();
+                        }
+                    })
                     .then(function() {
                         $state.go('app.mastery-analyzer.result', {
                             reportID: $scope.state.reportID,
@@ -772,7 +779,7 @@ angular.module('rdruid-mastery').service('settingsService', ["$rootScope", "$q",
     var STORAGEID = "settings";
 
     var storage = rdruidMastery.leveldb('./settings.leveldb');
-    rdruidMastery.settingsStorage = storage;
+    this.storage = storage;
 
     var normalizeVersion = function(v) {
         return parseInt(v.match(/^v(\d)\.(\d)\.(\d)$/).map(function(v) {

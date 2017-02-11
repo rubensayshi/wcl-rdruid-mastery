@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-xs-12">
         <ol class="breadcrumb">
-            <li><a href ng-click="gotoInput()">Mastery Analyzer</a></li>
+            <li><a href ng-click="gotoInput()">Resto Druid Analyzer</a></li>
             <!-- character -->
             <li ng-if="!state.reportID" class="active">
                 Reports
@@ -26,6 +26,10 @@
             <!-- character -->
             <li ng-if="state.actorID" class="active">
                 {{ state.actorName || state.actorID }}
+            </li>
+
+            <li style="float: right;">
+                <a href ng-click="logout()">logout</a>
             </li>
         </ol>
     </div>
