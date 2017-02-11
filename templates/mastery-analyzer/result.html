@@ -9,9 +9,9 @@
                         <h3 class="panel-title">Total Healing Done</h3>
                     </div>
                     <div class="panel-body">
-                        {{ result.totalHealing }} healing done <br />
-                        {{ result.totalOverhealing }} overhealing done, {{ ((result.totalOverhealing / result.totalHealing) * 100) | number:1 }}% <br />
-                        {{ result.rejuvCasts }} rejuvs casted, {{ result.rejuvTicks }} rejuv ticks
+                        {{ result.totalHealing | number:0 }} healing done <br />
+                        {{ result.totalOverhealing | number:0 }} overhealing done, {{ ((result.totalOverhealing / result.totalHealing) * 100) | number:1 }}% <br />
+                        {{ result.rejuvCasts | number:0 }} rejuvs casted, {{ result.rejuvTicks | number:0 }} rejuv ticks
                     </div>
                 </div>
             </div>
@@ -21,7 +21,7 @@
                         <h3 class="panel-title">Magic Rejuvs</h3>
                     </div>
                     <div class="panel-body">
-                        {{ result.magicRejuvs }} rejuvs we were unable to figure out where they came from
+                        {{ result.magicRejuvs | number:0 }} rejuvs we were unable to figure out where they came from
                     </div>
                 </div>
             </div>
@@ -31,9 +31,9 @@
                         <h3 class="panel-title">Power of the Archdruid</h3>
                     </div>
                     <div class="panel-body">
-                        {{ result.PotA.rejuvs }} bonus rejuvs,
-                        {{ result.PotA.regrowths }} bonus regrowths <br />
-                        {{ result.PotA.healing }} healing done, {{ ((result.PotA.healing / result.totalHealing) * 100) | number:1 }}%
+                        {{ result.PotA.rejuvs | number:0 }} bonus rejuvs,
+                        {{ result.PotA.regrowths | number:0 }} bonus regrowths <br />
+                        {{ result.PotA.healing | number:0 }} healing done, {{ ((result.PotA.healing / result.totalHealing) * 100) | number:1 }}%
                     </div>
                 </div>
             </div>
@@ -50,9 +50,9 @@
                             Tearstone so gud! how can you not have one?
                         </div>
                         <div ng-if="result.tearstone">
-                            {{ result.tearstoneRejuvs }} bonus rejuvs <br />
-                            {{ result.tearstoneHealing }} healing done, {{ ((result.tearstoneHealing / result.totalHealing) * 100) | number:1 }}% <br />
-                            {{ result.tearstoneOverhealing }} overhealing done, {{ ((result.tearstoneOverhealing / result.tearstoneHealing) * 100) | number:1 }}%
+                            {{ result.tearstoneRejuvs | number:0 }} bonus rejuvs <br />
+                            {{ result.tearstoneHealing | number:0 }} healing done, {{ ((result.tearstoneHealing / result.totalHealing) * 100) | number:1 }}% <br />
+                            {{ result.tearstoneOverhealing | number:0 }} overhealing done, {{ ((result.tearstoneOverhealing / result.tearstoneHealing) * 100) | number:1 }}%
                         </div>
                     </div>
                 </div>
@@ -67,9 +67,9 @@
                             Slack much? go PuG some HC to get 4pc tier20!
                         </div>
                         <div ng-if="result.tier204pc">
-                            {{ result.tier204pcRejuvs }} bonus rejuvs <br />
-                            {{ result.tier204pcHealing }} healing done, {{ ((result.tier204pcHealing / result.totalHealing) * 100) | number:1 }}%<br />
-                            {{ result.tier204pcOverhealing }} healing done, {{ ((result.tier204pcOverhealing / result.tier204pcHealing) * 100) | number:1 }}%
+                            {{ result.tier204pcRejuvs | number:0 }} bonus rejuvs <br />
+                            {{ result.tier204pcHealing | number:0 }} healing done, {{ ((result.tier204pcHealing / result.totalHealing) * 100) | number:1 }}%<br />
+                            {{ result.tier204pcOverhealing | number:0 }} healing done, {{ ((result.tier204pcOverhealing / result.tier204pcHealing) * 100) | number:1 }}%
                         </div>
                     </div>
                 </div>
@@ -133,9 +133,9 @@
                             <tbody>
                             <tr ng-repeat="row in result.masteryStacksHealing.table">
                                 <td>{{ row.stacks }} stacks</td>
-                                <td>{{ row.value | number:1 }}</td>
+                                <td>{{ row.value | number:0 }}</td>
                                 <td>{{ row.percentage | number:1 }}%</td>
-                                <td>{{ row.cvalue | number:1 }}</td>
+                                <td>{{ row.cvalue | number:0 }}</td>
                                 <td>{{ row.cpercentage | number:1 }}%</td>
                             </tr>
                             </tbody>
