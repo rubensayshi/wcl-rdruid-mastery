@@ -11,7 +11,7 @@
                     <div class="panel-body">
                         {{ result.totalHealing | number:0 }} healing done <br />
                         {{ result.totalOverhealing | number:0 }} overhealing done, {{ ((result.totalOverhealing / result.totalHealing) * 100) | number:1 }}% <br />
-                        {{ result.rejuvCasts | number:0 }} rejuvs casted, {{ result.rejuvTicks | number:0 }} rejuv ticks
+                        {{ result.rejuvCasts | number:0 }} rejuvs casted, {{ result.rejuvBuffs | number:0 }} rejuv buffs, {{ result.rejuvTicks | number:0 }} rejuv ticks
                     </div>
                 </div>
             </div>
@@ -51,6 +51,7 @@
                         </div>
                         <div ng-if="result.tearstone">
                             {{ result.tearstoneRejuvs | number:0 }} bonus rejuvs <br />
+                            {{ (((result.tearstoneRejuvs || 0) / (result.wgCasts * 5)) * 100) | number:2 }}% proc rate <br />
                             {{ result.tearstoneHealing | number:0 }} healing done, {{ ((result.tearstoneHealing / result.totalHealing) * 100) | number:1 }}% <br />
                             {{ result.tearstoneOverhealing | number:0 }} overhealing done, {{ ((result.tearstoneOverhealing / result.tearstoneHealing) * 100) | number:1 }}%
                         </div>
@@ -68,6 +69,7 @@
                         </div>
                         <div ng-if="result.tier204pc">
                             {{ result.tier204pcRejuvs | number:0 }} bonus rejuvs <br />
+                            {{ (((result.tier204pcRejuvs || 0) / result.rejuvTicks) * 100) | number:3 }}% proc rate <br />
                             {{ result.tier204pcHealing | number:0 }} healing done, {{ ((result.tier204pcHealing / result.totalHealing) * 100) | number:1 }}%<br />
                             {{ result.tier204pcOverhealing | number:0 }} healing done, {{ ((result.tier204pcOverhealing / result.tier204pcHealing) * 100) | number:1 }}%
                         </div>
