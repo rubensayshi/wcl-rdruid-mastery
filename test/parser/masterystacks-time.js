@@ -1,4 +1,4 @@
-var rdruidMastery = require('../');
+var rdruidMastery = require('../../');
 var test = require('tape');
 
 test('simple fight, 1 target, end of fight', function (t) {
