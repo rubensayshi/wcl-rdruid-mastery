@@ -182,11 +182,13 @@ else {
                                     console.log("magic rejuvs: " + result.magicRejuvs + " (" + ((result.magicRejuvs / result.rejuvTicks) * 100).toFixed(2) + "%)");
                                     console.log("4pc rejuvs: " + result.tier204pcRejuvs +
                                         " proc rate: " + ((result.tier204pcRejuvs || 0) / result.rejuvTicks * 100).toFixed(3) + "%" +
-                                            " healing done: " + result.tier204pcHealing + " (" + ((result.tier204pcHealing / result.totalHealing) * 100).toFixed(2) + "%)");
+                                        " healing done: " + result.tier204pcHealing + " (" + ((result.tier204pcHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
+                                        " overhealing done: " + result.tier204pcOverhealing + " (" + ((result.tier204pcOverhealing / (result.tier204pcOverhealing + result.tier204pcHealing)) * 100).toFixed(2) + "%)");
 
                                     console.log("tearstone rejuvs: " + result.tearstoneRejuvs +
                                         " proc rate: " + (((result.tearstoneRejuvs || 0) / (result.wgCasts * 5)) * 100).toFixed(2) + "%" +
-                                        " healing done: " + result.tearstoneHealing + " (" + ((result.tearstoneHealing / result.totalHealing) * 100).toFixed(2) + "%)");
+                                        " healing done: " + result.tearstoneHealing + " (" + ((result.tearstoneHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
+                                        " overhealing done: " + result.tearstoneOverhealing + " (" + ((result.tearstoneOverhealing / (result.tearstoneOverhealing + result.tearstoneHealing)) * 100).toFixed(2) + "%)");
 
                                     console.log("total healing done: " + result.totalHealing);
                                     console.log("PotA healing done: " + result.PotA.healing + " " + ((result.PotA.healing / result.totalHealing) * 100).toFixed(1) + "%");
