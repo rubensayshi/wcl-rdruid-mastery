@@ -152,8 +152,8 @@ else {
 
                                     var renderMasteryStacksTable = function(masteryStacks, isTime) {
                                         var table = new Table({
-                                            head: ['Stacks', isTime ? 'time' : 'healing', '%', 'cummul time', 'cummul %']
-                                            , colWidths: [8, 10, 10, 10, 10]
+                                            head: ['Stacks', (isTime ? 'time' : 'healing'), '%', 'cummul ' + (isTime ? 'time' : 'healing'), 'cummul %']
+                                            , colWidths: [8, 15, 10, 15, 10]
                                         });
 
                                         masteryStacks.table.forEach(function(row) {
