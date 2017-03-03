@@ -1,6 +1,10 @@
 #!/bin/sh
 
+VERSION=$(git log --pretty=format:'%h' -n 1)
+
 gulp
+
+sed -i "s/-- VERSION --/-- $VERSION --/g" web/www/index.html
 
 PROJECTDIR=$(pwd)
 TMPDIR=$(uuidgen)
