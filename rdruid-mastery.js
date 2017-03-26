@@ -194,6 +194,11 @@ else {
                                     console.log("PotA healing done: " + result.PotA.healing + " " + ((result.PotA.healing / result.totalHealing) * 100).toFixed(1) + "%");
                                     renderMasteryStacksTable(masteryStacksTime, true);
                                     renderMasteryStacksTable(masteryStacksHealing, false);
+
+                                    console.log('healing increase from SB mastery: ' + result.healingFromSBMastery.toFixed(0) + ' ' +
+                                        ((result.healingFromSBMastery / result.totalHealing) * 100).toFixed(2) + '%');
+
+                                    // console.log(result.combatantInfo);
                                 })
                             ;
                         })
