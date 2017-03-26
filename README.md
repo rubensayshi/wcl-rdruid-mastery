@@ -18,6 +18,11 @@ It does this by going through the `applybuff` and `removebuff` events;
 
 [![Build Status](https://travis-ci.org/rubensayshi/wcl-rdruid-mastery.png?branch=master)](https://travis-ci.org/rubensayshi/wcl-rdruid-mastery)
 
+Example
+-------
+![Example](https://raw.githubusercontent.com/rubensayshi/wcl-rdruid-mastery/master/example.png "Example")
+
+
 Install
 -------
 ```
