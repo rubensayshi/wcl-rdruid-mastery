@@ -61,17 +61,17 @@
             <div class="col-xs-12 col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Tier20 4pc</h3>
+                        <h3 class="panel-title">Tier19 4pc</h3>
                     </div>
                     <div class="panel-body">
-                        <div ng-if="!result.tier204pc">
-                            Slack much? go PuG some HC to get 4pc tier20!
+                        <div ng-if="!result.tier194pc">
+                            Slack much? go PuG some HC to get 4pc tier19!
                         </div>
-                        <div ng-if="result.tier204pc">
-                            {{ result.tier204pcRejuvs | number:0 }} bonus rejuvs <br />
-                            {{ (((result.tier204pcRejuvs || 0) / result.rejuvTicks) * 100) | number:3 }}% proc rate <br />
-                            {{ result.tier204pcHealing | number:0 }} healing done, {{ ((result.tier204pcHealing / result.totalHealing) * 100) | number:1 }}%<br />
-                            {{ result.tier204pcOverhealing | number:0 }} healing done, {{ ((result.tier204pcOverhealing / result.tier204pcHealing) * 100) | number:1 }}%
+                        <div ng-if="result.tier194pc">
+                            {{ result.tier194pcRejuvs | number:0 }} bonus rejuvs <br />
+                            {{ (((result.tier194pcRejuvs || 0) / result.rejuvTicks) * 100) | number:3 }}% proc rate <br />
+                            {{ result.tier194pcHealing | number:0 }} healing done, {{ ((result.tier194pcHealing / result.totalHealing) * 100) | number:1 }}%<br />
+                            {{ result.tier194pcOverhealing | number:0 }} healing done, {{ ((result.tier194pcOverhealing / result.tier194pcHealing) * 100) | number:1 }}%
                         </div>
                     </div>
                 </div>

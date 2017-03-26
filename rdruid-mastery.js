@@ -180,10 +180,10 @@ else {
                                     console.log("total rejuv casts: " + result.rejuvCasts);
                                     console.log("total rejuv buffs: " + result.rejuvBuffs);
                                     console.log("magic rejuvs: " + result.magicRejuvs + " (" + ((result.magicRejuvs / result.rejuvTicks) * 100).toFixed(2) + "%)");
-                                    console.log("4pc rejuvs: " + result.tier204pcRejuvs +
-                                        " proc rate: " + ((result.tier204pcRejuvs || 0) / result.rejuvTicks * 100).toFixed(3) + "%" +
-                                        " healing done: " + result.tier204pcHealing + " (" + ((result.tier204pcHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
-                                        " overhealing done: " + result.tier204pcOverhealing + " (" + ((result.tier204pcOverhealing / (result.tier204pcOverhealing + result.tier204pcHealing)) * 100).toFixed(2) + "%)");
+                                    console.log("4pc rejuvs: " + result.tier194pcRejuvs +
+                                        " proc rate: " + ((result.tier194pcRejuvs || 0) / result.rejuvTicks * 100).toFixed(3) + "%" +
+                                        " healing done: " + result.tier194pcHealing + " (" + ((result.tier194pcHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
+                                        " overhealing done: " + result.tier194pcOverhealing + " (" + ((result.tier194pcOverhealing / (result.tier194pcOverhealing + result.tier194pcHealing)) * 100).toFixed(2) + "%)");
 
                                     console.log("tearstone rejuvs: " + result.tearstoneRejuvs +
                                         " proc rate: " + (((result.tearstoneRejuvs || 0) / (result.wgCasts * 5)) * 100).toFixed(2) + "%" +
