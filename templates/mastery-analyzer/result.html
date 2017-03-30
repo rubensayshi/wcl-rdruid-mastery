@@ -76,24 +76,6 @@
                     </div>
                 </div>
             </div>
-            <div class="col-xs-12 col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">Spring Blossoms</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div ng-if="!result.sb">
-                            No Spring Blossoms? Much flowers, such healz!
-                        </div>
-                        <div ng-if="result.sb">
-                            healing from SB: <br />
-                            {{ result.healingPerSpell[CONSTS.SPELLS.SB] | number:0 }} ({{ ((result.healingPerSpell[CONSTS.SPELLS.SB] / result.totalHealing) * 100) | number:1 }}%) <br />
-                            bonus healing from mastery from SB HoT: <br />
-                            {{ result.healingFromSBMastery | number:0 }} ({{ ((result.healingFromSBMastery / result.totalHealing) * 100) | number:1 }}%) <br />
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="row">
