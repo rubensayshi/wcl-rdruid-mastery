@@ -43,24 +43,6 @@
             <div class="col-xs-12 col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">Tearstone</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div ng-if="!result.tearstone">
-                            Tearstone so gud! how can you not have one?
-                        </div>
-                        <div ng-if="result.tearstone">
-                            {{ result.tearstoneRejuvs | number:0 }} bonus rejuvs <br />
-                            {{ (((result.tearstoneRejuvs || 0) / (result.wgCasts * 5)) * 100) | number:2 }}% proc rate <br />
-                            {{ result.tearstoneHealing | number:0 }} healing done, {{ ((result.tearstoneHealing / result.totalHealing) * 100) | number:1 }}% <br />
-                            {{ result.tearstoneOverhealing | number:0 }} overhealing done, {{ ((result.tearstoneOverhealing / (result.tearstoneHealing + result.tearstoneOverhealing)) * 100) | number:1 }}%
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
                         <h3 class="panel-title">Tier19 4pc</h3>
                     </div>
                     <div class="panel-body">
@@ -79,17 +61,72 @@
             <div class="col-xs-12 col-md-4">
                 <div class="panel panel-default">
                     <div class="panel-heading">
+                        <h3 class="panel-title">Tearstone</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-if="!result.tearstone">
+                            Awh, y u have no tearstone!? 7.2 nerfbat!
+                        </div>
+                        <div ng-if="result.tearstone">
+                            {{ result.tearstoneRejuvs | number:0 }} bonus rejuvs <br />
+                            {{ (((result.tearstoneRejuvs || 0) / (result.wgCasts * 5)) * 100) | number:2 }}% proc rate <br />
+                            {{ result.tearstoneHealing | number:0 }} healing done, {{ ((result.tearstoneHealing / result.totalHealing) * 100) | number:1 }}% <br />
+                            {{ result.tearstoneOverhealing | number:0 }} overhealing done, {{ ((result.tearstoneOverhealing / (result.tearstoneHealing + result.tearstoneOverhealing)) * 100) | number:1 }}%
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Legendary Shoulders</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-if="!result.legshoulders">
+                            Meme shoulders so gud now!? get ehm why they're not nerfed yet!
+                        </div>
+                        <div ng-if="result.legshoulders">
+                            {{ result.fullOverhealRejuvTicks | number: 0 }} rejuv ticks on max HP targets <br />
+                            {{ result.legshouldersTicks | number:0 }} bonus rejuv ticks ({{ ((result.legshouldersTicks / result.rejuvTicks) * 100) | number:1 }}% of all ticks)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
                         <h3 class="panel-title">Spring Blossoms</h3>
                     </div>
                     <div class="panel-body">
-                        <div ng-if="!result.sb">
+                        <div ng-if="!result.talents.SB">
                             No Spring Blossoms? Much flowers, such healz!
                         </div>
-                        <div ng-if="result.sb">
+                        <div ng-if="result.talents.SB">
                             healing from SB: <br />
                             {{ result.healingPerSpell[CONSTS.SPELLS.SB] | number:0 }} ({{ ((result.healingPerSpell[CONSTS.SPELLS.SB] / result.totalHealing) * 100) | number:1 }}%) <br />
                             bonus healing from mastery from SB HoT: <br />
-                            {{ result.healingFromSBMastery | number:0 }} ({{ ((result.healingFromSBMastery / result.totalHealing) * 100) | number:1 }}%) <br />
+                            {{ result.masteryStacksHealingPerHoTRaw[CONSTS.SPELLS.SB] | number:0 }} ({{ ((result.masteryStacksHealingPerHoTRaw[CONSTS.SPELLS.SB] / result.totalHealing) * 100) | number:1 }}%) <br />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Cultivation</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div ng-if="!result.talents.CULTI">
+                            No Culti? Free healz! No Effort! ToL so stronk?
+                        </div>
+                        <div ng-if="result.talents.CULTI">
+                            healing from Culti: <br />
+                            {{ result.healingPerSpell[CONSTS.SPELLS.CULTI] | number:0 }} ({{ ((result.healingPerSpell[CONSTS.SPELLS.CULTI] / result.totalHealing) * 100) | number:1 }}%) <br />
+                            bonus healing from mastery from CULTI HoT: <br />
+                            {{ result.masteryStacksHealingPerHoTRaw[CONSTS.SPELLS.CULTI] | number:0 }} ({{ ((result.masteryStacksHealingPerHoTRaw[CONSTS.SPELLS.CULTI] / result.totalHealing) * 100) | number:1 }}%) <br />
                         </div>
                     </div>
                 </div>
