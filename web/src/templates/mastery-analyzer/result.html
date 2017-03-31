@@ -71,7 +71,7 @@
                             {{ result.tier194pcRejuvs | number:0 }} bonus rejuvs <br />
                             {{ (((result.tier194pcRejuvs || 0) / result.rejuvTicks) * 100) | number:3 }}% proc rate <br />
                             {{ result.tier194pcHealing | number:0 }} healing done, {{ ((result.tier194pcHealing / result.totalHealing) * 100) | number:1 }}%<br />
-                            {{ result.tier194pcOverhealing | number:0 }} healing done, {{ ((result.tier194pcOverhealing / result.tier194pcHealing) * 100) | number:1 }}%
+                            {{ result.tier194pcOverhealing | number:0 }} overhealing done, {{ ((result.tier194pcOverhealing / result.tier194pcHealing) * 100) | number:1 }}%
                         </div>
                     </div>
                 </div>
