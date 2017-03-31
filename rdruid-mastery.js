@@ -4,6 +4,7 @@ var leveldb = require('level-browserify');
 var q = require('q');
 
 var rdruidMastery = require('./');
+var consts = rdruidMastery.consts;
 
 // get CLI args
 var yargs = require('yargs').argv;
@@ -180,23 +181,53 @@ else {
                                     console.log("total rejuv casts: " + result.rejuvCasts);
                                     console.log("total rejuv buffs: " + result.rejuvBuffs);
                                     console.log("magic rejuvs: " + result.magicRejuvs + " (" + ((result.magicRejuvs / result.rejuvTicks) * 100).toFixed(2) + "%)");
-                                    console.log("4pc rejuvs: " + result.tier194pcRejuvs +
-                                        " proc rate: " + ((result.tier194pcRejuvs || 0) / result.rejuvTicks * 100).toFixed(3) + "%" +
-                                        " healing done: " + result.tier194pcHealing + " (" + ((result.tier194pcHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
-                                        " overhealing done: " + result.tier194pcOverhealing + " (" + ((result.tier194pcOverhealing / (result.tier194pcOverhealing + result.tier194pcHealing)) * 100).toFixed(2) + "%)");
+                                    if (result.tier194pc) {
+                                        console.log("4pc rejuvs: " + result.tier194pcRejuvs +
+                                            " proc rate: " + ((result.tier194pcRejuvs || 0) / result.rejuvTicks * 100).toFixed(3) + "%" +
+                                            " healing done: " + result.tier194pcHealing + " (" + ((result.tier194pcHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
+                                            " overhealing done: " + result.tier194pcOverhealing + " (" + ((result.tier194pcOverhealing / (result.tier194pcOverhealing + result.tier194pcHealing)) * 100).toFixed(2) + "%)");
+                                    } else {
+                                        console.log("no tier19 4pc");
+                                    }
 
-                                    console.log("tearstone rejuvs: " + result.tearstoneRejuvs +
-                                        " proc rate: " + (((result.tearstoneRejuvs || 0) / (result.wgCasts * 5)) * 100).toFixed(2) + "%" +
-                                        " healing done: " + result.tearstoneHealing + " (" + ((result.tearstoneHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
-                                        " overhealing done: " + result.tearstoneOverhealing + " (" + ((result.tearstoneOverhealing / (result.tearstoneOverhealing + result.tearstoneHealing)) * 100).toFixed(2) + "%)");
+                                    if (result.tearstone) {
+                                        console.log("tearstone rejuvs: " + result.tearstoneRejuvs +
+                                            " proc rate: " + (((result.tearstoneRejuvs || 0) / (result.wgCasts * 5)) * 100).toFixed(2) + "%" +
+                                            " healing done: " + result.tearstoneHealing + " (" + ((result.tearstoneHealing / result.totalHealing) * 100).toFixed(2) + "%)" +
+                                            " overhealing done: " + result.tearstoneOverhealing + " (" + ((result.tearstoneOverhealing / (result.tearstoneOverhealing + result.tearstoneHealing)) * 100).toFixed(2) + "%)");
+                                    } else {
+                                        console.log("no tearstone");
+                                    }
+
+                                    if (result.legshoulders) {
+                                        console.log("legendary shoulders bonus rejuv ticks: " + result.legshouldersTicks + " (" + ((result.legshouldersTicks / result.rejuvTicks) * 100).toFixed(2) + "%) " +
+                                            " (100% overheal ticks: " + result.fullOverhealRejuvTicks + ")");
+                                    } else {
+                                        console.log("no legendary shoulders");
+                                    }
+
+                                    if (result.talents.SB) {
+                                        console.log('healing from SB: ' + result.healingPerSpell[consts.SPELLS.SB] + ' ' +
+                                            ((result.healingPerSpell[consts.SPELLS.SB] / result.totalHealing) * 100).toFixed(2) + '%');
+                                        console.log('healing increase from SB mastery: ' + result.masteryStacksHealingPerHoTRaw[consts.SPELLS.SB].toFixed(0) + ' ' +
+                                            ((result.masteryStacksHealingPerHoTRaw[consts.SPELLS.SB] / result.totalHealing) * 100).toFixed(2) + '%');
+                                    } else {
+                                        console.log("no spring blossoms");
+                                    }
+
+                                    if (result.talents.CULTI) {
+                                        console.log('healing from Culti: ' + result.healingPerSpell[consts.SPELLS.CULTI] + ' ' +
+                                            ((result.healingPerSpell[consts.SPELLS.CULTI] / result.totalHealing) * 100).toFixed(2) + '%');
+                                        console.log('healing increase from Culti mastery: ' + result.masteryStacksHealingPerHoTRaw[consts.SPELLS.CULTI].toFixed(0) + ' ' +
+                                            ((result.masteryStacksHealingPerHoTRaw[consts.SPELLS.CULTI] / result.totalHealing) * 100).toFixed(2) + '%');
+                                    } else {
+                                        console.log("no culti");
+                                    }
 
                                     console.log("total healing done: " + result.totalHealing);
                                     console.log("PotA healing done: " + result.PotA.healing + " " + ((result.PotA.healing / result.totalHealing) * 100).toFixed(1) + "%");
                                     renderMasteryStacksTable(masteryStacksTime, true);
                                     renderMasteryStacksTable(masteryStacksHealing, false);
-
-                                    console.log('healing increase from SB mastery: ' + result.healingFromSBMastery.toFixed(0) + ' ' +
-                                        ((result.healingFromSBMastery / result.totalHealing) * 100).toFixed(2) + '%');
 
                                     // console.log(result.combatantInfo);
                                 })
