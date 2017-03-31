@@ -5,7 +5,7 @@ angular.module('rdruid-mastery', [
 angular.module('rdruid-mastery').run(
     function($rootScope, $state, $log) {
         // used to invalidate old parser results
-        $rootScope.RESULTS_VERSION = 'v1.2.0';
+        $rootScope.RESULTS_VERSION = 'v1.3.0';
         $rootScope.STORE_RESULTS = false;
         $rootScope.CONSTS = rdruidMastery.consts;
 
