@@ -759,7 +759,7 @@ angular.module('rdruid-mastery')
 
 
 angular.module('rdruid-mastery')
-    .controller('MasteryAnalyzerResultCtrl', ["$scope", "$state", "$timeout", "$stateParams", "settingsService", function($scope, $state, $timeout, $stateParams, settingsService) {
+    .controller('MasteryAnalyzerResultCtrl', ["$scope", "$rootScope", "$state", "$timeout", "$stateParams", "settingsService", function($scope, $rootScope, $state, $timeout, $stateParams, settingsService) {
         if (!$scope.checkState($stateParams)) {
             return;
         }
@@ -768,6 +768,11 @@ angular.module('rdruid-mastery')
             $scope.result = settingsService.results[$scope.RESULTS_VERSION][$scope.reportFightActorID()];
         } else {
             $scope.result = $scope.state.parser.result();
+        }
+
+        if ($scope.result.talents.GERM && !$rootScope.germWarned) {
+            $rootScope.germWarned = true;
+            alert("CAUTION: The Germination talent currently messes up PotA, tearstone and 4pc calculations!");
         }
     }]);
 
