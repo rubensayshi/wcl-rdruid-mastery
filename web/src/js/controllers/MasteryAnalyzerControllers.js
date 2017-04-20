@@ -163,15 +163,15 @@ angular.module('rdruid-mastery')
                 return false;
             }
 
-            if (!$scope.state.reportID && $stateParams.reportID) {
+            if ($stateParams.reportID) {
                 $scope.state.reportID = $stateParams.reportID;
             }
 
-            if (!$scope.state.fightID && $stateParams.fightID) {
+            if ($stateParams.fightID) {
                 $scope.state.fightID = parseInt($stateParams.fightID);
             }
 
-            if (!$scope.state.actorID && $stateParams.actorID) {
+            if ($stateParams.actorID) {
                 $scope.state.actorID = parseInt($stateParams.actorID);
             }
 
