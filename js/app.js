@@ -471,18 +471,22 @@ angular.module('rdruid-mastery')
     .controller('MasteryAnalyzerInputCtrl', ["$scope", "$state", "settingsService", function($scope, $state, settingsService) {
         $scope.continue = function() {
             if (!$scope.state.apikey) {
-                alert('NEED MORE DETAILS');
+                alert('Need an API key to continue');
                 return;
             }
 
-            settingsService.apikey = $scope.state.apikey;
+            $scope.wclapi().getClasses().then(function() {
+                settingsService.apikey = $scope.state.apikey;
 
-            settingsService.$store()
-                .then(function() {
-                    $state.go('app.mastery-analyzer.choose-report');
-                }).catch(function(e) {
+                settingsService.$store()
+                    .then(function() {
+                        $state.go('app.mastery-analyzer.choose-report');
+                    }).catch(function(e) {
                     alert(e);
                 });
+            }, function(e) {
+                alert("API key doesn't seem to work: " + e);
+            })
         };
     }]);
 
